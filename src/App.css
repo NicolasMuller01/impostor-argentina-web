@@ -209,7 +209,7 @@ p {
 }
 
 .screen {
-  padding-top: 14px;
+  padding-top: 10px;
 }
 
 .screen-transition {
@@ -219,12 +219,12 @@ p {
 .panel {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 22px;
-  box-shadow: 0 16px 30px rgba(11, 27, 47, 0.14);
+  border-radius: 20px;
+  box-shadow: 0 12px 24px rgba(11, 27, 47, 0.14);
   backdrop-filter: blur(8px);
-  padding: 14px;
+  padding: 12px;
   display: grid;
-  gap: 10px;
+  gap: 8px;
   animation: panelIn 420ms ease both;
 }
 
@@ -333,9 +333,9 @@ p {
 
 .config-hero {
   position: relative;
-  border-radius: 18px;
+  border-radius: 16px;
   overflow: hidden;
-  min-height: 140px;
+  min-height: 100px;
   margin-bottom: 4px;
   background-size: cover;
   background-position: center;
@@ -578,15 +578,15 @@ p {
 
 .reveal-card {
   width: 100%;
-  min-height: 250px;
+  min-height: 180px;
   border-radius: 24px;
   border: 0;
-  padding: 20px;
+  padding: 16px;
   color: #fff;
   text-align: center;
   display: grid;
   place-content: center;
-  gap: 7px;
+  gap: 6px;
   cursor: pointer;
   background:
     radial-gradient(circle at 20% 18%, rgba(255, 255, 255, 0.17), transparent 35%),
@@ -622,25 +622,25 @@ p {
 }
 
 .round-start-panel {
-  gap: 12px;
+  gap: 10px;
 }
 
 .round-start-kicker {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 800;
   color: #386184;
   text-transform: uppercase;
 }
 
 .round-start-title {
-  font-size: 42px;
-  line-height: 0.87;
+  font-size: 32px;
+  line-height: 0.9;
   color: #102f4f;
 }
 
 .starter-spotlight {
-  border-radius: 18px;
-  padding: 14px;
+  border-radius: 14px;
+  padding: 10px;
   border: 1px solid rgba(31, 134, 209, 0.28);
   background:
     radial-gradient(circle at 80% 0%, rgba(246, 191, 59, 0.22), transparent 35%),
@@ -649,15 +649,15 @@ p {
 }
 
 .starter-spotlight h4 {
-  font-size: 40px;
-  line-height: 0.85;
+  font-size: 28px;
+  line-height: 0.9;
   color: #0f3d63;
-  margin: 4px 0;
+  margin: 2px 0;
 }
 
 .starter-spotlight span {
   display: inline-block;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 800;
   color: #0b578e;
   text-transform: uppercase;
@@ -666,32 +666,32 @@ p {
 
 .round-start-grid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 8px;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
 }
 
 .round-start-card {
-  border-radius: 13px;
+  border-radius: 10px;
   border: 1px solid rgba(31, 134, 209, 0.21);
   background: #f8fcff;
-  padding: 11px;
+  padding: 8px;
 }
 
 .round-start-label {
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 800;
   text-transform: uppercase;
   color: #65809f;
 }
 
 .round-start-card strong {
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   color: #1e4365;
 }
 
 .round-start-tip {
   color: #36506d;
-  font-size: 0.95rem;
+  font-size: 0.85rem;
 }
 
 .portrait-grid {
@@ -770,12 +770,35 @@ p {
 }
 
 .elimination-player img {
-  width: 120px;
-  height: 120px;
+  width: 90px;
+  height: 90px;
   object-fit: cover;
-  border-radius: 26px;
+  border-radius: 20px;
   border: 3px solid rgba(31, 134, 209, 0.35);
-  box-shadow: 0 14px 24px rgba(11, 27, 47, 0.2);
+  box-shadow: 0 10px 18px rgba(11, 27, 47, 0.2);
+}
+
+.elimination-panel.danger .elimination-player img {
+  border-color: rgba(211, 63, 63, 0.45);
+}
+
+.elimination-kicker {
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #5d7d9e;
+}
+
+.elimination-player h3 {
+  font-size: 32px;
+  line-height: 0.9;
+  text-align: center;
+}
+
+.elimination-result {
+  font-size: 1.1rem;
+  font-weight: 800;
+  text-align: center;
 }
 
 .elimination-panel.danger .elimination-player img {
@@ -852,10 +875,10 @@ p {
 }
 
 .result-hero {
-  border-radius: 18px;
-  min-height: 218px;
+  border-radius: 16px;
+  min-height: 160px;
   position: relative;
-  padding: 14px;
+  padding: 12px;
   display: grid;
   place-items: center;
 }
@@ -876,57 +899,57 @@ p {
 .citizen-win {
   display: grid;
   justify-items: center;
-  gap: 8px;
+  gap: 6px;
   text-align: center;
 }
 
 .citizen-cup {
-  width: 106px;
-  height: 106px;
-  border-radius: 30px;
+  width: 80px;
+  height: 80px;
+  border-radius: 24px;
   display: grid;
   place-items: center;
   color: #845200;
-  font-size: 56px;
+  font-size: 44px;
   background: linear-gradient(160deg, #ffe08a, #e3a21e);
-  box-shadow: 0 14px 26px rgba(227, 162, 30, 0.38);
+  box-shadow: 0 10px 20px rgba(227, 162, 30, 0.38);
   border: 2px solid rgba(255, 255, 255, 0.7);
 }
 
 .citizen-win h3 {
-  font-size: 40px;
-  line-height: 0.88;
+  font-size: 30px;
+  line-height: 0.9;
   color: #143d60;
 }
 
 .citizen-win p {
   color: #36506d;
   font-weight: 700;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
 }
 
 .impostor-win {
   width: 100%;
   display: grid;
-  gap: 8px;
+  gap: 6px;
 }
 
 .impostor-win img {
   width: 100%;
-  max-height: 250px;
+  max-height: 180px;
   object-fit: cover;
-  border-radius: 14px;
+  border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.24);
 }
 
 .impostor-win p {
   color: #ffd6d6;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 700;
 }
 
 .result-title {
-  font-size: 38px;
+  font-size: 28px;
   line-height: 0.9;
 }
 
@@ -1106,5 +1129,59 @@ p {
   *::after {
     animation: none !important;
     transition: none !important;
+  }
+}
+
+@media (max-height: 700px) {
+  .app-shell {
+    padding-bottom: 80px;
+  }
+  
+  .panel {
+    padding: 10px;
+    gap: 6px;
+  }
+  
+  .config-hero {
+    min-height: 80px;
+  }
+  
+  .config-hero-content h3 {
+    font-size: 22px;
+  }
+  
+  .reveal-card {
+    min-height: 140px;
+    padding: 12px;
+  }
+  
+  .round-start-title {
+    font-size: 26px;
+  }
+  
+  .starter-spotlight h4 {
+    font-size: 24px;
+  }
+  
+  .elimination-player h3 {
+    font-size: 28px;
+  }
+  
+  .result-hero {
+    min-height: 120px;
+  }
+  
+  .citizen-cup {
+    width: 64px;
+    height: 64px;
+    font-size: 36px;
+  }
+  
+  .citizen-win h3 {
+    font-size: 26px;
+  }
+  
+  .result-title {
+    font-size: 24px;
   }
 }
