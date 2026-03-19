@@ -622,24 +622,28 @@ p {
 }
 
 .round-start-panel {
-  gap: 10px;
+  gap: 8px;
+}
+
+.round-start-panel .pill {
+  align-self: center;
 }
 
 .round-start-kicker {
-  font-size: 10px;
+  font-size: 9px;
   font-weight: 800;
   color: #386184;
   text-transform: uppercase;
 }
 
 .round-start-title {
-  font-size: 32px;
-  line-height: 0.9;
+  font-size: 26px;
+  line-height: 1;
   color: #102f4f;
 }
 
 .starter-spotlight {
-  border-radius: 14px;
+  border-radius: 12px;
   padding: 10px;
   border: 1px solid rgba(31, 134, 209, 0.28);
   background:
@@ -648,50 +652,54 @@ p {
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.64);
 }
 
+.starter-spotlight .round-start-label {
+  margin-bottom: 2px;
+}
+
 .starter-spotlight h4 {
-  font-size: 28px;
-  line-height: 0.9;
+  font-size: 22px;
+  line-height: 1;
   color: #0f3d63;
-  margin: 2px 0;
+  margin: 0;
 }
 
 .starter-spotlight span {
   display: inline-block;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 800;
   color: #0b578e;
   text-transform: uppercase;
-  letter-spacing: 0.4px;
+  letter-spacing: 0.3px;
 }
 
 .round-start-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 6px;
+  gap:6px;
 }
 
 .round-start-card {
-  border-radius: 10px;
+  border-radius: 8px;
   border: 1px solid rgba(31, 134, 209, 0.21);
   background: #f8fcff;
-  padding: 8px;
+  padding: 6px 8px;
 }
 
 .round-start-label {
-  font-size: 9px;
+  font-size: 8px;
   font-weight: 800;
   text-transform: uppercase;
   color: #65809f;
 }
 
 .round-start-card strong {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: #1e4365;
 }
 
 .round-start-tip {
   color: #36506d;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
 }
 
 .portrait-grid {
@@ -740,13 +748,13 @@ p {
 .elimination-panel {
   position: relative;
   overflow: hidden;
-  gap: 11px;
+  gap: 8px;
 }
 
 .elimination-glow {
   position: absolute;
   inset: auto -20% -35% -20%;
-  height: 230px;
+  height: 180px;
   pointer-events: none;
   background: radial-gradient(circle at 50% 0%, rgba(246, 191, 59, 0.26), transparent 65%);
 }
@@ -766,16 +774,63 @@ p {
   z-index: 1;
   display: grid;
   justify-items: center;
-  gap: 7px;
+  gap: 4px;
 }
 
 .elimination-player img {
-  width: 90px;
-  height: 90px;
+  width: 70px;
+  height: 70px;
   object-fit: cover;
-  border-radius: 20px;
-  border: 3px solid rgba(31, 134, 209, 0.35);
-  box-shadow: 0 10px 18px rgba(11, 27, 47, 0.2);
+  border-radius: 16px;
+  border: 2px solid rgba(31, 134, 209, 0.35);
+  box-shadow: 0 8px 14px rgba(11, 27, 47, 0.2);
+}
+
+.elimination-panel.danger .elimination-player img {
+  border-color: rgba(211, 63, 63, 0.45);
+}
+
+.elimination-kicker {
+  font-size: 8px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #5d7d9e;
+}
+
+.elimination-player h3 {
+  font-size: 26px;
+  line-height: 1;
+  text-align: center;
+}
+
+.elimination-result {
+  font-size: 1rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+.elimination-text {
+  font-size: 0.85rem;
+  color: #3f5772;
+  text-align: center;
+}
+
+.elimination-meta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.elimination-meta span {
+  border-radius: 10px;
+  border: 1px solid rgba(31, 134, 209, 0.24);
+  background: rgba(245, 251, 255, 0.8);
+  font-size: 10px;
+  font-weight: 800;
+  text-align: center;
+  text-transform: uppercase;
+  color: #24547d;
+  padding: 6px;
 }
 
 .elimination-panel.danger .elimination-player img {
@@ -1132,9 +1187,9 @@ p {
   }
 }
 
-@media (max-height: 700px) {
+@media (max-height: 750px) {
   .app-shell {
-    padding-bottom: 80px;
+    padding-bottom: 60px;
   }
   
   .panel {
@@ -1143,45 +1198,99 @@ p {
   }
   
   .config-hero {
-    min-height: 80px;
+    min-height: 70px;
   }
   
   .config-hero-content h3 {
-    font-size: 22px;
+    font-size: 20px;
   }
   
   .reveal-card {
-    min-height: 140px;
-    padding: 12px;
+    min-height: 130px;
+    padding: 10px;
   }
   
   .round-start-title {
-    font-size: 26px;
+    font-size: 22px;
   }
   
   .starter-spotlight h4 {
-    font-size: 24px;
+    font-size: 20px;
+  }
+  
+  .elimination-player img {
+    width: 60px;
+    height: 60px;
   }
   
   .elimination-player h3 {
-    font-size: 28px;
+    font-size: 22px;
   }
   
   .result-hero {
-    min-height: 120px;
+    min-height: 100px;
   }
   
   .citizen-cup {
-    width: 64px;
-    height: 64px;
-    font-size: 36px;
+    width: 56px;
+    height: 56px;
+    font-size: 30px;
   }
   
   .citizen-win h3 {
-    font-size: 26px;
+    font-size: 22px;
   }
   
   .result-title {
-    font-size: 24px;
+    font-size: 22px;
+  }
+}
+
+@media (max-height: 600px) {
+  .screen {
+    padding-top: 6px;
+  }
+  
+  .panel {
+    padding: 8px;
+    gap: 5px;
+  }
+  
+  .round-start-panel {
+    gap: 6px;
+  }
+  
+  .round-start-panel .pill {
+    font-size: 10px;
+    padding: 4px 10px;
+  }
+  
+  .round-start-title {
+    font-size: 20px;
+  }
+  
+  .starter-spotlight {
+    padding: 8px;
+  }
+  
+  .starter-spotlight h4 {
+    font-size: 18px;
+  }
+  
+  .round-start-card {
+    padding: 5px 6px;
+  }
+  
+  .elimination-panel {
+    gap: 6px;
+  }
+  
+  .elimination-player img {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .elimination-player h3 {
+    font-size: 20px;
   }
 }
