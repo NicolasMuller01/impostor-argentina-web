@@ -38,62 +38,6 @@ function GameHeader({ subtitle, onBack, dark = false }) {
   );
 }
 
-function InlineAd({ className = '' }) {
-  const adRef = useRef(null);
-  const adsenseClient = import.meta.env.VITE_ADSENSE_CLIENT_ID || 'ca-pub-9690532137867207';
-  const adsenseSlot =
-    import.meta.env.VITE_ADSENSE_INLINE_SLOT_ID || import.meta.env.VITE_ADSENSE_SLOT_ID || '0000000000';
-
-  useEffect(() => {
-    if (!adsenseClient) {
-      return;
-    }
-
-    const scriptId = 'adsense-script';
-    if (!document.getElementById(scriptId)) {
-      const script = document.createElement('script');
-      script.id = scriptId;
-      script.async = true;
-      script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClient}`;
-      script.crossOrigin = 'anonymous';
-      document.head.appendChild(script);
-    }
-
-    if (!adRef.current || adRef.current.dataset.loaded === 'true') {
-      return;
-    }
-
-    try {
-      if (window.adsbygoogle) {
-        window.adsbygoogle.push({});
-        adRef.current.dataset.loaded = 'true';
-      }
-    } catch {
-      // Placeholder fallback.
-    }
-  }, [adsenseClient]);
-
-  return (
-    <div className={`inline-ad ${className}`}>
-      {adsenseClient ? (
-        <ins
-          ref={adRef}
-          className="adsbygoogle"
-          style={{ display: 'block', minHeight: 80 }}
-          data-ad-client={adsenseClient}
-          data-ad-slot={adsenseSlot}
-          data-ad-format="auto"
-          data-full-width-responsive="true"
-        />
-      ) : (
-        <div className="inline-ad-placeholder">
-          <FaBullhorn /> Espacio publicitario
-        </div>
-      )}
-    </div>
-  );
-}
-
 function ConfigScreen({ gameEngine, onHome }) {
   const {
     players,
@@ -325,7 +269,6 @@ function RevealScreen({ gameEngine }) {
           <button type="button" className="primary-btn" onClick={() => setGameState(GAME_STATES.VOTING)}>
             <FaHandshake /> Empezar ronda
           </button>
-          <InlineAd />
         </div>
       </section>
     );
@@ -458,7 +401,6 @@ function EliminationScreen({ gameEngine }) {
         <button type="button" className="primary-btn" onClick={confirmElimination}>
           Continuar
         </button>
-        <InlineAd />
       </div>
     </section>
   );
