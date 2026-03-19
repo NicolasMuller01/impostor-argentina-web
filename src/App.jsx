@@ -358,16 +358,22 @@ function RevealScreen({ gameEngine }) {
   if (showRoundInfo) {
     return (
       <section className="screen reveal-screen">
-        <div className="panel round-start-panel">
+        <div className="panel round-start-panel dramatic-panel">
           <p className="pill"><FaShieldHalved /> Arranca la ronda</p>
-          <h3 className="round-start-title">Todo listo para debatir</h3>
+          <p className="round-start-kicker">Banca un toque y miren esto</p>
+          <h3 className="round-start-title">Quien abre la ronda</h3>
+          <div className="starter-spotlight">
+            <p className="round-start-label">Empieza</p>
+            <h4>{roundStartData.starter}</h4>
+            <span>{roundStartData.direction}</span>
+          </div>
           <div className="round-start-grid">
             <div className="round-start-card">
-              <p className="round-start-label">Empieza</p>
-              <strong>{roundStartData.starter}</strong>
+              <p className="round-start-label">Regla</p>
+              <strong>Hablen sin decir la palabra secreta</strong>
             </div>
             <div className="round-start-card">
-              <p className="round-start-label">Direccion</p>
+              <p className="round-start-label">Sentido</p>
               <strong>{roundStartData.direction}</strong>
             </div>
           </div>
@@ -481,15 +487,18 @@ function EliminationScreen({ gameEngine }) {
 
   const eliminatedPlayer = roles.find((role) => role.name === eliminatedInfo.name);
   const isImposter = eliminatedInfo.isImposter;
+  const alivePlayers = roles.filter((role) => !role.isEliminated).length;
 
   return (
     <section className="screen elimination-screen">
-      <div className={`panel elimination-panel ${isImposter ? 'danger' : 'safe'}`}>
+      <div className={`panel elimination-panel dramatic-panel ${isImposter ? 'danger' : 'safe'}`}>
+        <div className="elimination-glow" />
         <p className={`pill ${isImposter ? 'danger' : ''}`}>
           {isImposter ? <FaSkull /> : <FaTriangleExclamation />} Eliminacion
         </p>
         <div className="elimination-player">
           {eliminatedPlayer?.avatar ? <img src={eliminatedPlayer.avatar} alt={eliminatedPlayer.name} /> : null}
+          <p className="elimination-kicker">Se fue de la mesa</p>
           <h3>{eliminatedInfo.name.toUpperCase()}</h3>
         </div>
         <p className="elimination-result">{isImposter ? 'Era el impostor.' : 'Era un ciudadano inocente.'}</p>
@@ -498,6 +507,10 @@ function EliminationScreen({ gameEngine }) {
             ? 'Gran votacion. Le cortaron el juego al infiltrado.'
             : 'Se equivocaron. El impostor sigue entre ustedes.'}
         </p>
+        <div className="elimination-meta">
+          <span>{alivePlayers} siguen en juego</span>
+          <span>{isImposter ? 'Ventaja ciudadana' : 'Sigue la tension'}</span>
+        </div>
         <button type="button" className="primary-btn" onClick={confirmElimination}>
           Continuar
         </button>
@@ -508,28 +521,43 @@ function EliminationScreen({ gameEngine }) {
 }
 
 function ResultScreen({ gameEngine }) {
-  const { winner, roles, secretWord, resetGame } = gameEngine;
+  const { winner, roles, secretWord, resetGame, roundNumber } = gameEngine;
   const isCitizensWinner = winner === 'CITIZENS';
   const imposters = roles.filter((role) => role.isImposter);
   const backupWord = roles.find((role) => !role.isImposter)?.word;
   const displayWord = secretWord?.word || backupWord || '???';
+  const eliminatedCount = roles.filter((role) => role.isEliminated).length;
 
   return (
     <section className={`screen result-screen ${isCitizensWinner ? '' : 'dark'}`}>
-      <div className="panel result-panel">
-        <div className="result-hero">
+      <div className="panel result-panel dramatic-panel">
+        <div className={`result-hero ${isCitizensWinner ? 'citizens' : 'imposters'}`}>
           {isCitizensWinner ? (
             <div className="citizen-win">
               <div className="citizen-cup">
                 <FaTrophy />
               </div>
               <h3>Ganaron los ciudadanos</h3>
+              <p>La mesa detecto al infiltrado a tiempo.</p>
             </div>
           ) : (
-            <img src={samidViale} alt="Impostor ganador" />
+            <div className="impostor-win">
+              <img src={samidViale} alt="Impostor ganador" />
+              <p>El chamuyo fue perfecto: el impostor sobrevivio.</p>
+            </div>
           )}
         </div>
         <p className="result-title">{isCitizensWinner ? 'Vamos Argentina' : 'Gano el impostor'}</p>
+        <div className="result-summary">
+          <div className="result-stat">
+            <span>Ronda final</span>
+            <strong>{roundNumber}</strong>
+          </div>
+          <div className="result-stat">
+            <span>Eliminados</span>
+            <strong>{eliminatedCount}</strong>
+          </div>
+        </div>
 
         {imposters.map((imposter) => (
           <div className="imposter-row" key={imposter.name}>
@@ -597,17 +625,23 @@ function App() {
   }
 
   if (showSplash) {
-    return <LoadingSplash />;
+    return (
+      <div className="phone-viewport">
+        <LoadingSplash />
+      </div>
+    );
   }
 
   return (
-    <main className="app-shell">
-      <GameHeader subtitle={subtitle} onBack={backHandler} dark={darkHeader} />
-      <div key={gameEngine.gameState} className="screen-transition">
-        {screen}
-      </div>
-      <AdBanner />
-    </main>
+    <div className="phone-viewport">
+      <main className="app-shell">
+        <GameHeader subtitle={subtitle} onBack={backHandler} dark={darkHeader} />
+        <div key={gameEngine.gameState} className="screen-transition">
+          {screen}
+        </div>
+        <AdBanner />
+      </main>
+    </div>
   );
 }
 
