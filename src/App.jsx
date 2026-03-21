@@ -41,140 +41,6 @@ function GameHeader({ subtitle, onBack, dark = false }) {
   );
 }
 
-function InlineAd({ className = '' }) {
-  const adRef = useRef(null);
-  const adsenseClient = import.meta.env.VITE_ADSENSE_CLIENT_ID || 'ca-pub-9690532137867207';
-  const adsenseSlot =
-    import.meta.env.VITE_ADSENSE_INLINE_SLOT_ID || import.meta.env.VITE_ADSENSE_SLOT_ID || '0000000000';
-
-  useEffect(() => {
-    if (!adsenseClient) {
-      return;
-    }
-
-    const scriptId = 'adsense-script';
-    if (!document.getElementById(scriptId)) {
-      const script = document.createElement('script');
-      script.id = scriptId;
-      script.async = true;
-      script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClient}`;
-      script.crossOrigin = 'anonymous';
-      document.head.appendChild(script);
-    }
-
-    if (!adRef.current || adRef.current.dataset.loaded === 'true') {
-      return;
-    }
-
-    try {
-      if (window.adsbygoogle) {
-        window.adsbygoogle.push({});
-        adRef.current.dataset.loaded = 'true';
-      }
-    } catch {
-      // Placeholder fallback.
-    }
-  }, [adsenseClient]);
-
-  return (
-    <div className={`inline-ad ${className}`}>
-      {adsenseClient ? (
-        <ins
-          ref={adRef}
-          className="adsbygoogle"
-          style={{ display: 'block', minHeight: 80 }}
-          data-ad-client={adsenseClient}
-          data-ad-slot={adsenseSlot}
-          data-ad-format="auto"
-          data-full-width-responsive="true"
-        />
-      ) : (
-        <div className="inline-ad-placeholder">
-          <FaBullhorn /> Espacio publicitario
-        </div>
-      )}
-    </div>
-  );
-}
-
-function ModeSelectScreen({ gameEngine }) {
-  const { selectGameMode } = gameEngine;
-
-  return (
-    <section className="screen mode-select-screen">
-      <div className="panel">
-        <div className="mode-hero">
-          <div className="mode-hero-content">
-            <img src={mateIcon} alt="Mate" className="mode-hero-icon" />
-            <h2>Elegi el modo de juego</h2>
-            <p>Cada modo tiene sus propias reglas y mecanicas</p>
-          </div>
-        </div>
-
-        <div className="mode-cards">
-          <button
-            type="button"
-            className="mode-card classic-mode"
-            onClick={() => selectGameMode(GAME_MODES.CLASSIC)}
-          >
-            <div className="mode-card-icon">
-              <FaUserSecret />
-            </div>
-            <h3>Modo Clasico</h3>
-            <p>El original: Un jugador es el impostor y debe adivinar la palabra secreta mientras los demas la conocen.</p>
-            <ul className="mode-features">
-              <li>Palabra secreta para civiles</li>
-              <li>Impostor recibe pista</li>
-              <li>Votacion por sospechoso</li>
-            </ul>
-            <span className="mode-tag">Original</span>
-          </button>
-
-          <button
-            type="button"
-            className="mode-card fact-mode"
-            onClick={() => selectGameMode(GAME_MODES.RANDOM_FACT)}
-          >
-            <div className="mode-card-icon">
-              <FaRandom />
-            </div>
-            <h3>Dato Random</h3>
-            <p>Cada jugador recibe un dato real de Argentina. El impostor debe inventar un dato convincente para no ser descubierto.</p>
-            <ul className="mode-features">
-              <li>Datos reales de Argentina</li>
-              <li>Impostor inventa su dato</li>
-              <li>Detecta al mentiroso</li>
-            </ul>
-            <span className="mode-tag new">Nuevo</span>
-          </button>
-        </div>
-
-        <div className="mode-info-panel">
-          <h4>Como funciona Dato Random?</h4>
-          <div className="mode-info-steps">
-            <div className="mode-info-step">
-              <span className="step-number">1</span>
-              <p>Cada jugador NO impostor recibe un dato real de Argentina</p>
-            </div>
-            <div className="mode-info-step">
-              <span className="step-number">2</span>
-              <p>El impostor debe inventar un dato que suene creible</p>
-            </div>
-            <div className="mode-info-step">
-              <span className="step-number">3</span>
-              <p>Todos comparten su dato en la ronda de discusion</p>
-            </div>
-            <div className="mode-info-step">
-              <span className="step-number">4</span>
-              <p>Voten al jugador que crean que esta mintiendo</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function ConfigScreen({ gameEngine, onHome }) {
   const {
     gameMode,
@@ -463,7 +329,6 @@ function RevealScreen({ gameEngine }) {
           >
             <FaHandshake /> {isRandomFactMode ? 'Empezar discusion' : 'Empezar ronda'}
           </button>
-          <InlineAd />
         </div>
       </section>
     );
@@ -731,7 +596,6 @@ function EliminationScreen({ gameEngine }) {
         <button type="button" className="primary-btn" onClick={confirmElimination}>
           Continuar
         </button>
-        <InlineAd />
       </div>
     </section>
   );
