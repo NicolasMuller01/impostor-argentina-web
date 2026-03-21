@@ -1,15 +1,23 @@
-﻿import { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { getRandomWord } from '../data/words';
 import { getHintForWord } from '../data/hints';
+import { getRandomFact, FACT_CATEGORIES } from '../data/facts';
 import { AVATARS } from '../assets/avatars';
 
 export const GAME_STATES = {
   HOME: 'HOME',
   CONFIG: 'CONFIG',
   REVEAL: 'REVEAL',
+  DISCUSSION: 'DISCUSSION',
   VOTING: 'VOTING',
   ELIMINATION: 'ELIMINATION',
   RESULT: 'RESULT',
+  MODE_SELECT: 'MODE_SELECT',
+};
+
+export const GAME_MODES = {
+  CLASSIC: 'CLASSIC',
+  RANDOM_FACT: 'RANDOM_FACT',
 };
 
 const DEFAULT_CATEGORIES = [
@@ -24,10 +32,23 @@ const DEFAULT_CATEGORIES = [
   'animales',
 ];
 
+const DEFAULT_FACT_CATEGORIES = [
+  'geografia',
+  'historia',
+  'cultura',
+  'naturaleza',
+  'curiosidades',
+  'deportes',
+  'gastronomia',
+  'ciencia',
+];
+
 export const useGameEngine = ({ onGameBreak } = {}) => {
-  const [gameState, setGameState] = useState(GAME_STATES.CONFIG);
+  const [gameState, setGameState] = useState(GAME_STATES.HOME);
+  const [gameMode, setGameMode] = useState(null);
   const [players, setPlayers] = useState([]);
   const [categories, setCategories] = useState(DEFAULT_CATEGORIES);
+  const [factCategories, setFactCategories] = useState(DEFAULT_FACT_CATEGORIES);
   const [imposterCount, setImposterCount] = useState(1);
   const [useHints, setUseHints] = useState(true);
 
@@ -38,6 +59,11 @@ export const useGameEngine = ({ onGameBreak } = {}) => {
   const [eliminatedInfo, setEliminatedInfo] = useState(null);
   const [winner, setWinner] = useState(null);
   const [roundNumber, setRoundNumber] = useState(1);
+
+  const selectGameMode = useCallback((mode) => {
+    setGameMode(mode);
+    setGameState(GAME_STATES.CONFIG);
+  }, []);
 
   const addPlayer = useCallback((name) => {
     const clean = name.trim();
@@ -61,36 +87,75 @@ export const useGameEngine = ({ onGameBreak } = {}) => {
     });
   }, []);
 
+  const toggleFactCategory = useCallback((categoryId) => {
+    setFactCategories((prev) => {
+      if (prev.includes(categoryId)) {
+        return prev.length > 1 ? prev.filter((id) => id !== categoryId) : prev;
+      }
+      return [...prev, categoryId];
+    });
+  }, []);
+
   const startGame = useCallback(() => {
     if (players.length < 3) {
       return false;
     }
 
-    const wordData = getRandomWord(categories);
-    setSecretWord(wordData);
-    setCurrentHint(useHints ? getHintForWord(wordData.categoryId, wordData.word) : '');
-
     const shuffledPlayers = [...players].sort(() => Math.random() - 0.5);
     const shuffledAvatars = [...AVATARS].sort(() => Math.random() - 0.5);
 
-    const preparedRoles = shuffledPlayers.map((player, index) => ({
-      name: player,
-      isImposter: index < imposterCount,
-      word: index < imposterCount ? 'Eres el Impostor' : wordData.word,
-      category: wordData.category.toUpperCase(),
-      hasRevealed: false,
-      isEliminated: false,
-      avatar: shuffledAvatars[index],
-    }));
+    if (gameMode === GAME_MODES.CLASSIC) {
+      const wordData = getRandomWord(categories);
+      setSecretWord(wordData);
+      setCurrentHint(useHints ? getHintForWord(wordData.categoryId, wordData.word) : '');
 
-    setRoles(preparedRoles.sort(() => Math.random() - 0.5));
+      const preparedRoles = shuffledPlayers.map((player, index) => ({
+        name: player,
+        isImposter: index < imposterCount,
+        word: index < imposterCount ? 'Eres el Impostor' : wordData.word,
+        category: wordData.category.toUpperCase(),
+        hasRevealed: false,
+        isEliminated: false,
+        avatar: shuffledAvatars[index],
+      }));
+
+      setRoles(preparedRoles.sort(() => Math.random() - 0.5));
+    } else if (gameMode === GAME_MODES.RANDOM_FACT) {
+      const preparedRoles = [];
+      let impostorAssigned = 0;
+
+      shuffledPlayers.forEach((player, index) => {
+        const isImposter = impostorAssigned < imposterCount;
+        if (isImposter) impostorAssigned++;
+
+        let factData = null;
+        if (!isImposter) {
+          factData = getRandomFact(factCategories);
+        }
+
+        preparedRoles.push({
+          name: player,
+          isImposter,
+          fact: isImposter ? null : factData?.fact,
+          category: factData?.category?.toUpperCase() || 'DATO RANDOM',
+          icon: factData?.icon || '🇦🇷',
+          hasRevealed: false,
+          isEliminated: false,
+          avatar: shuffledAvatars[index],
+          hasSharedFact: false,
+        });
+      });
+
+      setRoles(preparedRoles.sort(() => Math.random() - 0.5));
+    }
+
     setCurrentRevealIndex(0);
     setEliminatedInfo(null);
     setWinner(null);
     setRoundNumber(1);
     setGameState(GAME_STATES.REVEAL);
     return true;
-  }, [categories, imposterCount, players, useHints]);
+  }, [gameMode, categories, factCategories, imposterCount, players, useHints]);
 
   const nextReveal = useCallback(() => {
     setRoles((prev) => {
@@ -106,12 +171,32 @@ export const useGameEngine = ({ onGameBreak } = {}) => {
       if (nextIndex !== -1) {
         setCurrentRevealIndex(nextIndex);
       } else {
-        setGameState(GAME_STATES.VOTING);
+        if (gameMode === GAME_MODES.RANDOM_FACT) {
+          setGameState(GAME_STATES.DISCUSSION);
+        } else {
+          setGameState(GAME_STATES.VOTING);
+        }
       }
 
       return updated;
     });
-  }, [currentRevealIndex]);
+  }, [currentRevealIndex, gameMode]);
+
+  const markFactShared = useCallback((playerName) => {
+    setRoles((prev) =>
+      prev.map((role) =>
+        role.name === playerName ? { ...role, hasSharedFact: true } : role
+      )
+    );
+  }, []);
+
+  const allFactsShared = useCallback(() => {
+    return roles.every((role) => role.isEliminated || role.hasSharedFact);
+  }, [roles]);
+
+  const startVoting = useCallback(() => {
+    setGameState(GAME_STATES.VOTING);
+  }, []);
 
   const votePlayer = useCallback((playerName) => {
     const found = roles.find((role) => role.name === playerName);
@@ -150,8 +235,12 @@ export const useGameEngine = ({ onGameBreak } = {}) => {
     }
 
     setRoundNumber((prev) => prev + 1);
-    setGameState(GAME_STATES.VOTING);
-  }, [onGameBreak, roles]);
+    if (gameMode === GAME_MODES.RANDOM_FACT) {
+      setGameState(GAME_STATES.DISCUSSION);
+    } else {
+      setGameState(GAME_STATES.VOTING);
+    }
+  }, [onGameBreak, roles, gameMode]);
 
   const resetGame = useCallback(() => {
     setGameState(GAME_STATES.CONFIG);
@@ -164,7 +253,8 @@ export const useGameEngine = ({ onGameBreak } = {}) => {
   }, []);
 
   const goHome = useCallback(() => {
-    setGameState(GAME_STATES.CONFIG);
+    setGameState(GAME_STATES.HOME);
+    setGameMode(null);
     setPlayers([]);
     setRoles([]);
     setEliminatedInfo(null);
@@ -176,11 +266,15 @@ export const useGameEngine = ({ onGameBreak } = {}) => {
   return {
     gameState,
     setGameState,
+    gameMode,
+    selectGameMode,
     players,
     addPlayer,
     removePlayer,
     categories,
     toggleCategory,
+    factCategories,
+    toggleFactCategory,
     imposterCount,
     setImposterCount,
     useHints,
@@ -198,6 +292,8 @@ export const useGameEngine = ({ onGameBreak } = {}) => {
     secretWord,
     resetGame,
     goHome,
+    markFactShared,
+    allFactsShared,
+    startVoting,
   };
 };
-

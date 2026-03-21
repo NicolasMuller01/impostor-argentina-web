@@ -1,4 +1,4 @@
-﻿import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   FaArrowLeft,
   FaBullhorn,
@@ -9,15 +9,18 @@ import {
   FaTrophy,
   FaTriangleExclamation,
   FaUserSecret,
+  FaComments,
 } from 'react-icons/fa6';
+import { FaRandom } from 'react-icons/fa';
 import './App.css';
 import { CATEGORIES } from './data/words';
+import { FACT_CATEGORIES } from './data/facts';
 import { AVATARS } from './assets/avatars';
 import samidViale from './assets/samid_viale.png';
 import mainRoom from './assets/main_room.jpg';
 import mateIcon from './assets/mate_icon.png';
 import loadingVideo from './assets/animacion-completa.mp4';
-import { GAME_STATES, useGameEngine } from './hooks/useGameEngine';
+import { GAME_STATES, GAME_MODES, useGameEngine } from './hooks/useGameEngine';
 
 function GameHeader({ subtitle, onBack, dark = false }) {
   return (
@@ -94,13 +97,94 @@ function InlineAd({ className = '' }) {
   );
 }
 
+function ModeSelectScreen({ gameEngine }) {
+  const { selectGameMode } = gameEngine;
+
+  return (
+    <section className="screen mode-select-screen">
+      <div className="panel">
+        <div className="mode-hero">
+          <div className="mode-hero-content">
+            <img src={mateIcon} alt="Mate" className="mode-hero-icon" />
+            <h2>Elegi el modo de juego</h2>
+            <p>Cada modo tiene sus propias reglas y mecanicas</p>
+          </div>
+        </div>
+
+        <div className="mode-cards">
+          <button
+            type="button"
+            className="mode-card classic-mode"
+            onClick={() => selectGameMode(GAME_MODES.CLASSIC)}
+          >
+            <div className="mode-card-icon">
+              <FaUserSecret />
+            </div>
+            <h3>Modo Clasico</h3>
+            <p>El original: Un jugador es el impostor y debe adivinar la palabra secreta mientras los demas la conocen.</p>
+            <ul className="mode-features">
+              <li>Palabra secreta para civiles</li>
+              <li>Impostor recibe pista</li>
+              <li>Votacion por sospechoso</li>
+            </ul>
+            <span className="mode-tag">Original</span>
+          </button>
+
+          <button
+            type="button"
+            className="mode-card fact-mode"
+            onClick={() => selectGameMode(GAME_MODES.RANDOM_FACT)}
+          >
+            <div className="mode-card-icon">
+              <FaRandom />
+            </div>
+            <h3>Dato Random</h3>
+            <p>Cada jugador recibe un dato real de Argentina. El impostor debe inventar un dato convincente para no ser descubierto.</p>
+            <ul className="mode-features">
+              <li>Datos reales de Argentina</li>
+              <li>Impostor inventa su dato</li>
+              <li>Detecta al mentiroso</li>
+            </ul>
+            <span className="mode-tag new">Nuevo</span>
+          </button>
+        </div>
+
+        <div className="mode-info-panel">
+          <h4>Como funciona Dato Random?</h4>
+          <div className="mode-info-steps">
+            <div className="mode-info-step">
+              <span className="step-number">1</span>
+              <p>Cada jugador NO impostor recibe un dato real de Argentina</p>
+            </div>
+            <div className="mode-info-step">
+              <span className="step-number">2</span>
+              <p>El impostor debe inventar un dato que suene creible</p>
+            </div>
+            <div className="mode-info-step">
+              <span className="step-number">3</span>
+              <p>Todos comparten su dato en la ronda de discusion</p>
+            </div>
+            <div className="mode-info-step">
+              <span className="step-number">4</span>
+              <p>Voten al jugador que crean que esta mintiendo</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function ConfigScreen({ gameEngine, onHome }) {
   const {
+    gameMode,
     players,
     addPlayer,
     removePlayer,
     categories,
     toggleCategory,
+    factCategories,
+    toggleFactCategory,
     imposterCount,
     setImposterCount,
     useHints,
@@ -120,6 +204,20 @@ function ConfigScreen({ gameEngine, onHome }) {
       })),
     [],
   );
+
+  const factCategoryOptions = useMemo(
+    () =>
+      Object.values(FACT_CATEGORIES).map((category) => ({
+        id: category.id,
+        name: category.name,
+        icon: category.icon,
+      })),
+    [],
+  );
+
+  const activeCategories = gameMode === GAME_MODES.RANDOM_FACT ? factCategories : categories;
+  const activeToggle = gameMode === GAME_MODES.RANDOM_FACT ? toggleFactCategory : toggleCategory;
+  const activeCategoryOptions = gameMode === GAME_MODES.RANDOM_FACT ? factCategoryOptions : categoryOptions;
 
   const addPlayerSafe = useCallback(() => {
     if (!playerInput.trim()) {
@@ -143,6 +241,8 @@ function ConfigScreen({ gameEngine, onHome }) {
     }
   }, [startGame]);
 
+  const modeLabel = gameMode === GAME_MODES.RANDOM_FACT ? 'Dato Random' : 'Clasico';
+
   return (
     <section className="screen config-screen">
       <div className="panel">
@@ -153,11 +253,12 @@ function ConfigScreen({ gameEngine, onHome }) {
             <div>
               <p className="hero-eyebrow">Previa de partida</p>
               <h3>Arma la mesa y que arranque el bardo</h3>
+              <span className="mode-badge">{modeLabel}</span>
             </div>
           </div>
           <div className="config-hero-pills">
             <span>{players.length} jugadores</span>
-            <span>{categories.length} categorias</span>
+            <span>{activeCategories.length} categorias</span>
             <span>{imposterCount} impostor(es)</span>
           </div>
         </div>
@@ -199,53 +300,80 @@ function ConfigScreen({ gameEngine, onHome }) {
           </div>
         </div>
 
-        <div className="split-grid config-block">
-          <div className="inner-card">
-            <h4>Impostores</h4>
-            <div className="chip-row">
-              {[1, 2, 3].map((count) => (
+        {gameMode === GAME_MODES.CLASSIC && (
+          <div className="split-grid config-block">
+            <div className="inner-card">
+              <h4>Impostores</h4>
+              <div className="chip-row">
+                {[1, 2, 3].map((count) => (
+                  <button
+                    type="button"
+                    key={count}
+                    className={`chip-btn ${imposterCount === count ? 'active' : ''}`}
+                    onClick={() => setImposterCount(count)}
+                  >
+                    {count}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="inner-card">
+              <h4>Pistas</h4>
+              <div className="chip-row">
                 <button
                   type="button"
-                  key={count}
-                  className={`chip-btn ${imposterCount === count ? 'active' : ''}`}
-                  onClick={() => setImposterCount(count)}
+                  className={`chip-btn ${useHints ? 'active' : ''}`}
+                  onClick={() => setUseHints(true)}
                 >
-                  {count}
+                  Si
                 </button>
-              ))}
+                <button
+                  type="button"
+                  className={`chip-btn ${!useHints ? 'danger' : ''}`}
+                  onClick={() => setUseHints(false)}
+                >
+                  No
+                </button>
+              </div>
             </div>
           </div>
+        )}
 
-          <div className="inner-card">
-            <h4>Pistas</h4>
-            <div className="chip-row">
-              <button
-                type="button"
-                className={`chip-btn ${useHints ? 'active' : ''}`}
-                onClick={() => setUseHints(true)}
-              >
-                Si
-              </button>
-              <button
-                type="button"
-                className={`chip-btn ${!useHints ? 'danger' : ''}`}
-                onClick={() => setUseHints(false)}
-              >
-                No
-              </button>
+        {gameMode === GAME_MODES.RANDOM_FACT && (
+          <div className="split-grid config-block">
+            <div className="inner-card">
+              <h4>Impostores</h4>
+              <div className="chip-row">
+                {[1, 2, 3].map((count) => (
+                  <button
+                    type="button"
+                    key={count}
+                    className={`chip-btn ${imposterCount === count ? 'active' : ''}`}
+                    onClick={() => setImposterCount(count)}
+                  >
+                    {count}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="inner-card info-card">
+              <h4>Dato Real</h4>
+              <p className="info-text">Los jugadores reciben datos reales de Argentina</p>
             </div>
           </div>
-        </div>
+        )}
 
         <div className="config-block">
-          <h4>Categorias</h4>
+          <h4>{gameMode === GAME_MODES.RANDOM_FACT ? 'Categorias de Datos' : 'Categorias'}</h4>
           <div className="category-grid">
-            {categoryOptions.map((category) => (
+            {activeCategoryOptions.map((category) => (
               <button
                 type="button"
                 key={category.id}
-                className={`category-card ${categories.includes(category.id) ? 'selected' : ''}`}
-                onClick={() => toggleCategory(category.id)}
+                className={`category-card ${activeCategories.includes(category.id) ? 'selected' : ''}`}
+                onClick={() => activeToggle(category.id)}
               >
                 <span>{category.icon}</span>
                 <strong>{category.name}</strong>
@@ -265,7 +393,7 @@ function ConfigScreen({ gameEngine, onHome }) {
 }
 
 function RevealScreen({ gameEngine }) {
-  const { roles, currentRevealIndex, nextReveal, setGameState, roundNumber, useHints, currentHint } = gameEngine;
+  const { roles, currentRevealIndex, nextReveal, setGameState, roundNumber, useHints, currentHint, gameMode } = gameEngine;
   const [isRevealed, setIsRevealed] = useState(false);
   const [hasSeenWord, setHasSeenWord] = useState(false);
   const [showRoundInfo, setShowRoundInfo] = useState(false);
@@ -299,6 +427,8 @@ function RevealScreen({ gameEngine }) {
     nextReveal();
   };
 
+  const isRandomFactMode = gameMode === GAME_MODES.RANDOM_FACT;
+
   if (showRoundInfo) {
     return (
       <section className="screen reveal-screen">
@@ -314,16 +444,24 @@ function RevealScreen({ gameEngine }) {
           <div className="round-start-grid">
             <div className="round-start-card">
               <p className="round-start-label">Regla</p>
-              <strong>Hablen sin decir la palabra secreta</strong>
+              <strong>{isRandomFactMode ? 'Comparte tu dato sin revelar si es real' : 'Hablen sin decir la palabra secreta'}</strong>
             </div>
             <div className="round-start-card">
               <p className="round-start-label">Sentido</p>
               <strong>{roundStartData.direction}</strong>
             </div>
           </div>
-          <p className="round-start-tip">Describan la palabra sin decirla. El impostor tiene que chamuyar.</p>
-          <button type="button" className="primary-btn" onClick={() => setGameState(GAME_STATES.VOTING)}>
-            <FaHandshake /> Empezar ronda
+          <p className="round-start-tip">
+            {isRandomFactMode 
+              ? 'Cada jugador cuenta su dato. El impostor debe inventar uno convincente.'
+              : 'Describan la palabra sin decirla. El impostor tiene que chamuyar.'}
+          </p>
+          <button 
+            type="button" 
+            className="primary-btn" 
+            onClick={() => setGameState(isRandomFactMode ? GAME_STATES.DISCUSSION : GAME_STATES.VOTING)}
+          >
+            <FaHandshake /> {isRandomFactMode ? 'Empezar discusion' : 'Empezar ronda'}
           </button>
           <InlineAd />
         </div>
@@ -337,43 +475,87 @@ function RevealScreen({ gameEngine }) {
         <p className="instruction">
           Turno de <strong>{currentPlayer.name.toUpperCase()}</strong>. Que nadie mire la pantalla.
         </p>
-        <p className="category-badge">Categoria: {currentPlayer.category}</p>
-
-        <div className={`hint-card ${useHints && currentPlayer.isImposter && isRevealed ? '' : 'placeholder'}`}>
-          {useHints && currentPlayer.isImposter && isRevealed ? (
+        <p className="category-badge">
+          {isRandomFactMode ? (
             <>
-              <strong>Pista:</strong> {currentHint}
+              {currentPlayer.icon} {currentPlayer.category}
             </>
           ) : (
-            <span className="hint-empty">Pista reservada</span>
+            `Categoria: ${currentPlayer.category}`
           )}
-        </div>
+        </p>
 
-        <button
-          type="button"
-          className={`reveal-card ${isRevealed ? 'holding' : ''} ${currentPlayer.isImposter && isRevealed ? 'imposter' : ''}`}
-          onClick={() => {
-            setIsRevealed((prev) => {
-              const next = !prev;
-              if (next) {
-                setHasSeenWord(true);
-              }
-              return next;
-            });
-          }}
-        >
-          {!isRevealed ? (
-            <>
-              <p className="small">Click para revelar</p>
-              <h4><FaEyeSlash /></h4>
-            </>
-          ) : (
-            <>
-              <p className="small">{currentPlayer.isImposter ? 'Sos el impostor' : 'Sos inocente'}</p>
-              <h4>{currentPlayer.isImposter ? 'Adivina la palabra' : currentPlayer.word}</h4>
-            </>
-          )}
-        </button>
+        {gameMode === GAME_MODES.CLASSIC && (
+          <div className={`hint-card ${useHints && currentPlayer.isImposter && isRevealed ? '' : 'placeholder'}`}>
+            {useHints && currentPlayer.isImposter && isRevealed ? (
+              <>
+                <strong>Pista:</strong> {currentHint}
+              </>
+            ) : (
+              <span className="hint-empty">Pista reservada</span>
+            )}
+          </div>
+        )}
+
+        {isRandomFactMode ? (
+          <button
+            type="button"
+            className={`reveal-card fact-card ${isRevealed ? 'holding' : ''} ${currentPlayer.isImposter && isRevealed ? 'imposter' : ''}`}
+            onClick={() => {
+              setIsRevealed((prev) => {
+                const next = !prev;
+                if (next) {
+                  setHasSeenWord(true);
+                }
+                return next;
+              });
+            }}
+          >
+            {!isRevealed ? (
+              <>
+                <p className="small">Click para revelar</p>
+                <h4><FaEyeSlash /></h4>
+              </>
+            ) : currentPlayer.isImposter ? (
+              <>
+                <p className="small">Sos el impostor</p>
+                <h4 className="fact-text">Inventa un dato convincente</h4>
+                <p className="fact-hint">Piensa en algo que suene real de Argentina</p>
+              </>
+            ) : (
+              <>
+                <p className="small">Tu dato real</p>
+                <h4 className="fact-text">{currentPlayer.fact}</h4>
+              </>
+            )}
+          </button>
+        ) : (
+          <button
+            type="button"
+            className={`reveal-card ${isRevealed ? 'holding' : ''} ${currentPlayer.isImposter && isRevealed ? 'imposter' : ''}`}
+            onClick={() => {
+              setIsRevealed((prev) => {
+                const next = !prev;
+                if (next) {
+                  setHasSeenWord(true);
+                }
+                return next;
+              });
+            }}
+          >
+            {!isRevealed ? (
+              <>
+                <p className="small">Click para revelar</p>
+                <h4><FaEyeSlash /></h4>
+              </>
+            ) : (
+              <>
+                <p className="small">{currentPlayer.isImposter ? 'Sos el impostor' : 'Sos inocente'}</p>
+                <h4>{currentPlayer.isImposter ? 'Adivina la palabra' : currentPlayer.word}</h4>
+              </>
+            )}
+          </button>
+        )}
 
         <button type="button" className="secondary-btn" onClick={handleNext} disabled={!hasSeenWord}>
           Confirmar vista
@@ -385,18 +567,104 @@ function RevealScreen({ gameEngine }) {
   );
 }
 
+function DiscussionScreen({ gameEngine }) {
+  const { roles, markFactShared, startVoting, roundNumber } = gameEngine;
+  const [sharedPlayers, setSharedPlayers] = useState(new Set());
+
+  const activePlayers = roles.filter((role) => !role.isEliminated);
+
+  const handleShareFact = (playerName) => {
+    setSharedPlayers((prev) => new Set([...prev, playerName]));
+    markFactShared(playerName);
+  };
+
+  const canStartVoting = sharedPlayers.size === activePlayers.length;
+
+  return (
+    <section className="screen discussion-screen">
+      <div className="panel">
+        <div className="panel-title-row">
+          <h3><FaComments /> Discusion - Ronda {roundNumber}</h3>
+        </div>
+
+        <p className="discussion-instruction">
+          Cada jugador comparte su dato. Cuando todos terminen, pasen a votacion.
+        </p>
+
+        <div className="discussion-grid">
+          {activePlayers.map((player) => {
+            const hasShared = sharedPlayers.has(player.name);
+            return (
+              <div
+                key={player.name}
+                className={`discussion-card ${hasShared ? 'shared' : ''}`}
+              >
+                <img src={player.avatar} alt={player.name} className="discussion-avatar" />
+                <div className="discussion-info">
+                  <strong>{player.name}</strong>
+                  {hasShared ? (
+                    <span className="fact-badge">{player.icon || '🇦🇷'} Dato compartido</span>
+                  ) : (
+                    <span className="pending-badge">Pendiente</span>
+                  )}
+                </div>
+                {!hasShared && (
+                  <button
+                    type="button"
+                    className="share-btn"
+                    onClick={() => handleShareFact(player.name)}
+                  >
+                    Compartir
+                  </button>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="discussion-progress">
+          <div className="progress-bar">
+            <div
+              className="progress-fill"
+              style={{ width: `${(sharedPlayers.size / activePlayers.length) * 100}%` }}
+            />
+          </div>
+          <span>{sharedPlayers.size} de {activePlayers.length} compartieron</span>
+        </div>
+
+        <button
+          type="button"
+          className="primary-btn"
+          onClick={startVoting}
+          disabled={!canStartVoting}
+        >
+          <FaHandshake /> Ir a votacion
+        </button>
+      </div>
+    </section>
+  );
+}
+
 function VotingScreen({ gameEngine }) {
-  const { roles, votePlayer, setGameState, roundNumber } = gameEngine;
+  const { roles, votePlayer, roundNumber, gameMode } = gameEngine;
+
+  const isRandomFactMode = gameMode === GAME_MODES.RANDOM_FACT;
 
   return (
     <section className="screen voting-screen">
       <div className="panel">
         <div className="panel-title-row">
           <h3>Votacion - Ronda {roundNumber}</h3>
-          <button type="button" className="ghost-btn" onClick={() => setGameState(GAME_STATES.REVEAL)}>
-            Volver
-          </button>
+          {isRandomFactMode && (
+            <span className="mode-indicator">Detecta al mentiroso</span>
+          )}
         </div>
+
+        {isRandomFactMode && (
+          <p className="voting-hint">
+            Vota al jugador que creas que invento su dato. El impostor no tiene un dato real de Argentina.
+          </p>
+        )}
 
         <div className="portrait-grid">
           {roles.map((player) => (
@@ -423,7 +691,7 @@ function VotingScreen({ gameEngine }) {
 }
 
 function EliminationScreen({ gameEngine }) {
-  const { eliminatedInfo, confirmElimination, roles } = gameEngine;
+  const { eliminatedInfo, confirmElimination, roles, gameMode } = gameEngine;
 
   if (!eliminatedInfo) {
     return null;
@@ -432,6 +700,7 @@ function EliminationScreen({ gameEngine }) {
   const eliminatedPlayer = roles.find((role) => role.name === eliminatedInfo.name);
   const isImposter = eliminatedInfo.isImposter;
   const alivePlayers = roles.filter((role) => !role.isEliminated).length;
+  const isRandomFactMode = gameMode === GAME_MODES.RANDOM_FACT;
 
   return (
     <section className="screen elimination-screen">
@@ -445,7 +714,11 @@ function EliminationScreen({ gameEngine }) {
           <p className="elimination-kicker">Se fue de la mesa</p>
           <h3>{eliminatedInfo.name.toUpperCase()}</h3>
         </div>
-        <p className="elimination-result">{isImposter ? 'Era el impostor.' : 'Era un ciudadano inocente.'}</p>
+        <p className="elimination-result">
+          {isImposter 
+            ? (isRandomFactMode ? 'Estaba mintiendo.' : 'Era el impostor.') 
+            : (isRandomFactMode ? 'Su dato era real.' : 'Era un ciudadano inocente.')}
+        </p>
         <p className="elimination-text">
           {isImposter
             ? 'Gran votacion. Le cortaron el juego al infiltrado.'
@@ -465,12 +738,13 @@ function EliminationScreen({ gameEngine }) {
 }
 
 function ResultScreen({ gameEngine }) {
-  const { winner, roles, secretWord, resetGame, roundNumber } = gameEngine;
+  const { winner, roles, secretWord, resetGame, roundNumber, gameMode } = gameEngine;
   const isCitizensWinner = winner === 'CITIZENS';
   const imposters = roles.filter((role) => role.isImposter);
   const backupWord = roles.find((role) => !role.isImposter)?.word;
   const displayWord = secretWord?.word || backupWord || '???';
   const eliminatedCount = roles.filter((role) => role.isEliminated).length;
+  const isRandomFactMode = gameMode === GAME_MODES.RANDOM_FACT;
 
   return (
     <section className={`screen result-screen ${isCitizensWinner ? '' : 'dark'}`}>
@@ -510,7 +784,9 @@ function ResultScreen({ gameEngine }) {
           </div>
         ))}
 
-        <p className="secret-word">Palabra secreta: {displayWord.toUpperCase()}</p>
+        {!isRandomFactMode && (
+          <p className="secret-word">Palabra secreta: {displayWord.toUpperCase()}</p>
+        )}
 
         <div className="result-actions">
           <button type="button" className="primary-btn" onClick={resetGame}>
@@ -544,14 +820,33 @@ function App() {
     return () => clearTimeout(timer);
   }, []);
 
-  let screen = <ConfigScreen gameEngine={gameEngine} onHome={gameEngine.goHome} />;
-  let subtitle = 'Configuracion';
+  let screen = null;
+  let subtitle = '';
   let darkHeader = false;
   let backHandler = gameEngine.goHome;
 
-  if (gameEngine.gameState === GAME_STATES.REVEAL) {
+  if (showSplash) {
+    return (
+      <div className="phone-viewport">
+        <LoadingSplash />
+      </div>
+    );
+  }
+
+  if (gameEngine.gameState === GAME_STATES.HOME) {
+    screen = <ModeSelectScreen gameEngine={gameEngine} />;
+    subtitle = '';
+    backHandler = null;
+  } else if (gameEngine.gameState === GAME_STATES.CONFIG) {
+    screen = <ConfigScreen gameEngine={gameEngine} onHome={gameEngine.goHome} />;
+    subtitle = 'Configuracion';
+  } else if (gameEngine.gameState === GAME_STATES.REVEAL) {
     screen = <RevealScreen gameEngine={gameEngine} />;
     subtitle = gameEngine.roundNumber > 1 ? `Ronda ${gameEngine.roundNumber}` : 'Tu palabra secreta';
+    backHandler = null;
+  } else if (gameEngine.gameState === GAME_STATES.DISCUSSION) {
+    screen = <DiscussionScreen gameEngine={gameEngine} />;
+    subtitle = 'Discusion';
     backHandler = null;
   } else if (gameEngine.gameState === GAME_STATES.VOTING) {
     screen = <VotingScreen gameEngine={gameEngine} />;
@@ -565,15 +860,6 @@ function App() {
     screen = <ResultScreen gameEngine={gameEngine} />;
     subtitle = 'Partida finalizada';
     darkHeader = gameEngine.winner === 'IMPOSTERS';
-    backHandler = gameEngine.goHome;
-  }
-
-  if (showSplash) {
-    return (
-      <div className="phone-viewport">
-        <LoadingSplash />
-      </div>
-    );
   }
 
   return (
