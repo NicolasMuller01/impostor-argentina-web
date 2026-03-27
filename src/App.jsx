@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+// eslint-disable-next-line no-unused-vars
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   FaArrowLeft,
   FaBullhorn,
@@ -13,14 +15,20 @@ import {
 } from 'react-icons/fa6';
 import { FaRandom } from 'react-icons/fa';
 import './App.css';
+import './styles/animations.css';
 import { CATEGORIES } from './data/words';
 import { FACT_CATEGORIES } from './data/facts';
 import { AVATARS } from './assets/avatars';
 import samidViale from './assets/samid_viale.png';
-import mainRoom from './assets/main_room.jpg';
-import mateIcon from './assets/mate_icon.png';
-import loadingVideo from './assets/animacion-completa.mp4';
+import image1 from './assets/image1.png';
+import image2 from './assets/image2.png';
 import { GAME_STATES, GAME_MODES, useGameEngine } from './hooks/useGameEngine';
+import { PageTransition, StaggerContainer, StaggerItem } from './components/PageTransition';
+import { Button3D, GlowButton } from './components/ui/Button3D';
+import { Card3D } from './components/ui/Card3D';
+import { useConfetti } from './components/effects/ConfettiEffect';
+import { FloatingParticles, FloatingIcon, PulseGlow } from './components/effects/FloatingParticles';
+import { Tooltip } from './components/ui/Tooltip';
 
 function GameHeader({ subtitle, onBack, dark = false }) {
   return (
@@ -41,136 +49,131 @@ function GameHeader({ subtitle, onBack, dark = false }) {
   );
 }
 
-function InlineAd({ className = '' }) {
-  const adRef = useRef(null);
-  const adsenseClient = import.meta.env.VITE_ADSENSE_CLIENT_ID || 'ca-pub-9690532137867207';
-  const adsenseSlot =
-    import.meta.env.VITE_ADSENSE_INLINE_SLOT_ID || import.meta.env.VITE_ADSENSE_SLOT_ID || '0000000000';
-
-  useEffect(() => {
-    if (!adsenseClient) {
-      return;
-    }
-
-    const scriptId = 'adsense-script';
-    if (!document.getElementById(scriptId)) {
-      const script = document.createElement('script');
-      script.id = scriptId;
-      script.async = true;
-      script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClient}`;
-      script.crossOrigin = 'anonymous';
-      document.head.appendChild(script);
-    }
-
-    if (!adRef.current || adRef.current.dataset.loaded === 'true') {
-      return;
-    }
-
-    try {
-      if (window.adsbygoogle) {
-        window.adsbygoogle.push({});
-        adRef.current.dataset.loaded = 'true';
-      }
-    } catch {
-      // Placeholder fallback.
-    }
-  }, [adsenseClient]);
-
-  return (
-    <div className={`inline-ad ${className}`}>
-      {adsenseClient ? (
-        <ins
-          ref={adRef}
-          className="adsbygoogle"
-          style={{ display: 'block', minHeight: 80 }}
-          data-ad-client={adsenseClient}
-          data-ad-slot={adsenseSlot}
-          data-ad-format="auto"
-          data-full-width-responsive="true"
-        />
-      ) : (
-        <div className="inline-ad-placeholder">
-          <FaBullhorn /> Espacio publicitario
-        </div>
-      )}
-    </div>
-  );
-}
-
 function ModeSelectScreen({ gameEngine }) {
   const { selectGameMode } = gameEngine;
 
   return (
     <section className="screen mode-select-screen">
-      <div className="panel">
-        <div className="mode-hero">
+      <FloatingParticles count={15} className="screen-particles" />
+      <motion.div 
+        className="panel"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+      >
+        <motion.div 
+          className="mode-hero"
+          initial={{ scale: 0.95, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.1, duration: 0.3 }}
+        >
           <div className="mode-hero-content">
-            <img src={mateIcon} alt="Mate" className="mode-hero-icon" />
-            <h2>Elegi el modo de juego</h2>
-            <p>Cada modo tiene sus propias reglas y mecanicas</p>
+            <FloatingIcon icon={<img src={image1} alt="Impostor" />} size={50}>
+              </FloatingIcon>
+            <motion.h2
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+            >
+              Elegi el modo de juego
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+            >
+              Cada modo tiene sus propias reglas y mecanicas
+            </motion.p>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="mode-cards">
-          <button
-            type="button"
-            className="mode-card classic-mode"
-            onClick={() => selectGameMode(GAME_MODES.CLASSIC)}
-          >
-            <div className="mode-card-icon">
-              <FaUserSecret />
-            </div>
-            <h3>Modo Clasico</h3>
-            <p>El original: Un jugador es el impostor y debe adivinar la palabra secreta mientras los demas la conocen.</p>
-            <ul className="mode-features">
-              <li>Palabra secreta para civiles</li>
-              <li>Impostor recibe pista</li>
-              <li>Votacion por sospechoso</li>
-            </ul>
-            <span className="mode-tag">Original</span>
-          </button>
+        <StaggerContainer delay={0.2} stagger={0.1}>
+          <div className="mode-cards">
+            <StaggerItem>
+              <motion.button
+                type="button"
+                className="mode-card classic-mode"
+                onClick={() => selectGameMode(GAME_MODES.CLASSIC)}
+                whileHover={{ scale: 1.02, y: -4 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <div className="mode-card-icon">
+                  <motion.div
+                    animate={{ y: [0, -5, 0] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  >
+                    <FaUserSecret />
+                  </motion.div>
+                </div>
+                <h3>Modo Clasico</h3>
+                <p>El original: Un jugador es el impostor y debe adivinar la palabra secreta mientras los demas la conocen.</p>
+                <ul className="mode-features">
+                  <li>Palabra secreta para civiles</li>
+                  <li>Impostor recibe pista</li>
+                  <li>Votacion por sospechoso</li>
+                </ul>
+                <span className="mode-tag">Original</span>
+              </motion.button>
+            </StaggerItem>
 
-          <button
-            type="button"
-            className="mode-card fact-mode"
-            onClick={() => selectGameMode(GAME_MODES.RANDOM_FACT)}
-          >
-            <div className="mode-card-icon">
-              <FaRandom />
-            </div>
-            <h3>Dato Random</h3>
-            <p>Cada jugador recibe un dato real de Argentina. El impostor debe inventar un dato convincente para no ser descubierto.</p>
-            <ul className="mode-features">
-              <li>Datos reales de Argentina</li>
-              <li>Impostor inventa su dato</li>
-              <li>Detecta al mentiroso</li>
-            </ul>
-            <span className="mode-tag new">Nuevo</span>
-          </button>
-        </div>
+            <StaggerItem>
+              <motion.button
+                type="button"
+                className="mode-card fact-mode"
+                onClick={() => selectGameMode(GAME_MODES.RANDOM_FACT)}
+                whileHover={{ scale: 1.02, y: -4 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <div className="mode-card-icon">
+                  <motion.div
+                    animate={{ rotate: [0, 10, -10, 0] }}
+                    transition={{ duration: 3, repeat: Infinity }}
+                  >
+                    <FaRandom />
+                  </motion.div>
+                </div>
+                <h3>Dato Random</h3>
+                <p>Cada jugador recibe un dato real de Argentina. El impostor debe inventar un dato convincente para no ser descubierto.</p>
+                <ul className="mode-features">
+                  <li>Datos reales de Argentina</li>
+                  <li>Impostor inventa su dato</li>
+                  <li>Detecta al mentiroso</li>
+                </ul>
+                <span className="mode-tag new">Nuevo</span>
+              </motion.button>
+            </StaggerItem>
+          </div>
+        </StaggerContainer>
 
-        <div className="mode-info-panel">
+        <motion.div 
+          className="mode-info-panel"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+        >
           <h4>Como funciona Dato Random?</h4>
           <div className="mode-info-steps">
-            <div className="mode-info-step">
-              <span className="step-number">1</span>
-              <p>Cada jugador NO impostor recibe un dato real de Argentina</p>
-            </div>
-            <div className="mode-info-step">
-              <span className="step-number">2</span>
-              <p>El impostor debe inventar un dato que suene creible</p>
-            </div>
-            <div className="mode-info-step">
-              <span className="step-number">3</span>
-              <p>Todos comparten su dato en la ronda de discusion</p>
-            </div>
-            <div className="mode-info-step">
-              <span className="step-number">4</span>
-              <p>Voten al jugador que crean que esta mintiendo</p>
-            </div>
+            {[1, 2, 3, 4].map((num, idx) => (
+              <motion.div 
+                key={num}
+                className="mode-info-step"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.6 + idx * 0.1 }}
+              >
+                <motion.span 
+                  className="step-number"
+                  animate={{ scale: [1, 1.1, 1] }}
+                  transition={{ duration: 2, repeat: Infinity, delay: idx * 0.3 }}
+                >
+                  {num}
+                </motion.span>
+                <p>{['Cada jugador NO impostor recibe un dato real de Argentina', 'El impostor debe inventar un dato que suene creible', 'Todos comparten su dato en la ronda de discusion', 'Voten al jugador que crean que esta mintiendo'][idx]}</p>
+              </motion.div>
+            ))}
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </section>
   );
 }
@@ -194,6 +197,7 @@ function ConfigScreen({ gameEngine, onHome }) {
 
   const [playerInput, setPlayerInput] = useState('');
   const [error, setError] = useState('');
+  const canStart = players.length >= 3;
 
   const categoryOptions = useMemo(
     () =>
@@ -245,46 +249,105 @@ function ConfigScreen({ gameEngine, onHome }) {
 
   return (
     <section className="screen config-screen">
-      <div className="panel">
-        <div className="config-hero" style={{ backgroundImage: `url(${mainRoom})` }}>
+      <motion.div 
+        className="panel"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        <motion.div 
+          className="config-hero" 
+          style={{ backgroundImage: `url(${image1})` }}
+          initial={{ scale: 1.05 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 0.5 }}
+        >
           <div className="config-hero-mask" />
           <div className="config-hero-content">
-            <img src={mateIcon} alt="Mate" />
+            <motion.img 
+              src={image1} 
+              alt="Impostor" 
+              animate={{ rotate: [0, 5, -5, 0] }}
+              transition={{ duration: 3, repeat: Infinity }}
+            />
             <div>
               <p className="hero-eyebrow">Previa de partida</p>
               <h3>Arma la mesa y que arranque el bardo</h3>
-              <span className="mode-badge">{modeLabel}</span>
+              <motion.span 
+                className="mode-badge"
+                animate={{ scale: [1, 1.05, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                {modeLabel}
+              </motion.span>
             </div>
           </div>
           <div className="config-hero-pills">
-            <span>{players.length} jugadores</span>
-            <span>{activeCategories.length} categorias</span>
+            <motion.span
+              key={players.length}
+              initial={{ scale: 1.3 }}
+              animate={{ scale: 1 }}
+            >
+              {players.length} jugadores
+            </motion.span>
+            <motion.span
+              key={activeCategories.length}
+              initial={{ scale: 1.3 }}
+              animate={{ scale: 1 }}
+            >
+              {activeCategories.length} categorias
+            </motion.span>
             <span>{imposterCount} impostor(es)</span>
           </div>
-        </div>
+        </motion.div>
 
         <div className="panel-title-row">
           <h3>Configurar partida</h3>
-          <button type="button" className="ghost-btn" onClick={onHome}>
+          <motion.button 
+            type="button" 
+            className="ghost-btn" 
+            onClick={onHome}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
             Limpiar
-          </button>
+          </motion.button>
         </div>
 
         <div className="config-block">
           <h4>Jugadores</h4>
           <div className="players-list">
-            {players.map((player) => (
-              <div className="player-chip" key={player}>
-                <span>{player}</span>
-                <button type="button" onClick={() => removePlayer(player)}>
-                  x
-                </button>
-              </div>
-            ))}
+            <AnimatePresence>
+              {players.map((player, idx) => (
+                <motion.div 
+                  className="player-chip" 
+                  key={player}
+                  initial={{ opacity: 0, x: -20, scale: 0.8 }}
+                  animate={{ opacity: 1, x: 0, scale: 1 }}
+                  exit={{ opacity: 0, x: 20, scale: 0.8 }}
+                  transition={{ delay: idx * 0.05 }}
+                >
+                  <span>{player}</span>
+                  <motion.button 
+                    type="button" 
+                    onClick={() => removePlayer(player)}
+                    whileHover={{ scale: 1.2 }}
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    x
+                  </motion.button>
+                </motion.div>
+              ))}
+            </AnimatePresence>
           </div>
 
-          <div className="add-row">
-            <input
+          <motion.div 
+            className="add-row"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+          >
+            <motion.input
               value={playerInput}
               onChange={(event) => setPlayerInput(event.target.value)}
               onKeyDown={(event) => {
@@ -293,27 +356,41 @@ function ConfigScreen({ gameEngine, onHome }) {
                 }
               }}
               placeholder="Nombre del jugador"
+              whileFocus={{ scale: 1.01, boxShadow: '0 0 0 3px rgba(38, 148, 232, 0.2)' }}
             />
-            <button type="button" className="secondary-btn" onClick={addPlayerSafe}>
+            <motion.button 
+              type="button" 
+              className="secondary-btn" 
+              onClick={addPlayerSafe}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
               Agregar
-            </button>
-          </div>
+            </motion.button>
+          </motion.div>
         </div>
 
         {gameMode === GAME_MODES.CLASSIC && (
-          <div className="split-grid config-block">
+          <motion.div 
+            className="split-grid config-block"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+          >
             <div className="inner-card">
               <h4>Impostores</h4>
               <div className="chip-row">
                 {[1, 2, 3].map((count) => (
-                  <button
+                  <motion.button
                     type="button"
                     key={count}
                     className={`chip-btn ${imposterCount === count ? 'active' : ''}`}
                     onClick={() => setImposterCount(count)}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
                   >
                     {count}
-                  </button>
+                  </motion.button>
                 ))}
               </div>
             </div>
@@ -321,39 +398,50 @@ function ConfigScreen({ gameEngine, onHome }) {
             <div className="inner-card">
               <h4>Pistas</h4>
               <div className="chip-row">
-                <button
+                <motion.button
                   type="button"
                   className={`chip-btn ${useHints ? 'active' : ''}`}
                   onClick={() => setUseHints(true)}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                 >
                   Si
-                </button>
-                <button
+                </motion.button>
+                <motion.button
                   type="button"
                   className={`chip-btn ${!useHints ? 'danger' : ''}`}
                   onClick={() => setUseHints(false)}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                 >
                   No
-                </button>
+                </motion.button>
               </div>
             </div>
-          </div>
+          </motion.div>
         )}
 
         {gameMode === GAME_MODES.RANDOM_FACT && (
-          <div className="split-grid config-block">
+          <motion.div 
+            className="split-grid config-block"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+          >
             <div className="inner-card">
               <h4>Impostores</h4>
               <div className="chip-row">
                 {[1, 2, 3].map((count) => (
-                  <button
+                  <motion.button
                     type="button"
                     key={count}
                     className={`chip-btn ${imposterCount === count ? 'active' : ''}`}
                     onClick={() => setImposterCount(count)}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
                   >
                     {count}
-                  </button>
+                  </motion.button>
                 ))}
               </div>
             </div>
@@ -362,32 +450,53 @@ function ConfigScreen({ gameEngine, onHome }) {
               <h4>Dato Real</h4>
               <p className="info-text">Los jugadores reciben datos reales de Argentina</p>
             </div>
-          </div>
+          </motion.div>
         )}
 
         <div className="config-block">
           <h4>{gameMode === GAME_MODES.RANDOM_FACT ? 'Categorias de Datos' : 'Categorias'}</h4>
-          <div className="category-grid">
-            {activeCategoryOptions.map((category) => (
-              <button
-                type="button"
-                key={category.id}
-                className={`category-card ${activeCategories.includes(category.id) ? 'selected' : ''}`}
-                onClick={() => activeToggle(category.id)}
-              >
-                <span>{category.icon}</span>
-                <strong>{category.name}</strong>
-              </button>
-            ))}
-          </div>
+          <StaggerContainer stagger={0.05}>
+            <div className="category-grid">
+              {activeCategoryOptions.map((category) => (
+                <StaggerItem key={category.id}>
+                  <motion.button
+                    type="button"
+                    className={`category-card ${activeCategories.includes(category.id) ? 'selected' : ''}`}
+                    onClick={() => activeToggle(category.id)}
+                    whileHover={{ scale: 1.02, y: -2 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <motion.span
+                      animate={activeCategories.includes(category.id) ? { scale: [1, 1.2, 1] } : {}}
+                      transition={{ duration: 0.3 }}
+                    >
+                      {category.icon}
+                    </motion.span>
+                    <strong>{category.name}</strong>
+                  </motion.button>
+                </StaggerItem>
+              ))}
+            </div>
+          </StaggerContainer>
         </div>
 
-        {!!error && <p className="error-line">{error}</p>}
+        <AnimatePresence>
+          {!!error && (
+            <motion.p 
+              className="error-line"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+            >
+              {error}
+            </motion.p>
+          )}
+        </AnimatePresence>
 
-        <button type="button" className="primary-btn" onClick={handleStart}>
+        <GlowButton onClick={handleStart} pulse={canStart} disabled={!canStart}>
           <FaBullhorn /> Empezar partida
-        </button>
-      </div>
+        </GlowButton>
+      </motion.div>
     </section>
   );
 }
@@ -432,16 +541,50 @@ function RevealScreen({ gameEngine }) {
   if (showRoundInfo) {
     return (
       <section className="screen reveal-screen">
-        <div className="panel round-start-panel dramatic-panel">
-          <p className="pill"><FaShieldHalved /> Arranca la ronda</p>
+        <motion.div 
+          className="panel round-start-panel dramatic-panel"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.4 }}
+        >
+          <motion.p 
+            className="pill"
+            initial={{ y: -20 }}
+            animate={{ y: 0 }}
+            transition={{ delay: 0.1 }}
+          >
+            <FaShieldHalved /> Arranca la ronda
+          </motion.p>
           <p className="round-start-kicker">Banca un toque y miren esto</p>
-          <h3 className="round-start-title">Quien abre la ronda</h3>
-          <div className="starter-spotlight">
+          <motion.h3 
+            className="round-start-title"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+          >
+            Quien abre la ronda
+          </motion.h3>
+          <motion.div 
+            className="starter-spotlight"
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.3, type: 'spring' }}
+          >
             <p className="round-start-label">Empieza</p>
             <h4>{roundStartData.starter}</h4>
-            <span>{roundStartData.direction}</span>
-          </div>
-          <div className="round-start-grid">
+            <motion.span
+              animate={{ x: [0, 5, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+            >
+              {roundStartData.direction}
+            </motion.span>
+          </motion.div>
+          <motion.div 
+            className="round-start-grid"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+          >
             <div className="round-start-card">
               <p className="round-start-label">Regla</p>
               <strong>{isRandomFactMode ? 'Comparte tu dato sin revelar si es real' : 'Hablen sin decir la palabra secreta'}</strong>
@@ -450,32 +593,54 @@ function RevealScreen({ gameEngine }) {
               <p className="round-start-label">Sentido</p>
               <strong>{roundStartData.direction}</strong>
             </div>
-          </div>
-          <p className="round-start-tip">
+          </motion.div>
+          <motion.p 
+            className="round-start-tip"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+          >
             {isRandomFactMode 
               ? 'Cada jugador cuenta su dato. El impostor debe inventar uno convincente.'
               : 'Describan la palabra sin decirla. El impostor tiene que chamuyar.'}
-          </p>
-          <button 
-            type="button" 
-            className="primary-btn" 
-            onClick={() => setGameState(isRandomFactMode ? GAME_STATES.DISCUSSION : GAME_STATES.VOTING)}
-          >
+          </motion.p>
+          <GlowButton onClick={() => setGameState(isRandomFactMode ? GAME_STATES.DISCUSSION : GAME_STATES.VOTING)}>
             <FaHandshake /> {isRandomFactMode ? 'Empezar discusion' : 'Empezar ronda'}
-          </button>
-          <InlineAd />
-        </div>
+          </GlowButton>
+        </motion.div>
       </section>
     );
   }
 
+  const getCardStyle = () => {
+    if (isRandomFactMode) {
+      return currentPlayer.isImposter && isRevealed ? 'imposter' : 'citizen';
+    }
+    return currentPlayer.isImposter && isRevealed ? 'imposter' : 'citizen';
+  };
+
   return (
     <section className="screen reveal-screen">
-      <div className="panel reveal-panel">
-        <p className="instruction">
+      <motion.div 
+        className="panel reveal-panel"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        <motion.p 
+          className="instruction"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.1 }}
+        >
           Turno de <strong>{currentPlayer.name.toUpperCase()}</strong>. Que nadie mire la pantalla.
-        </p>
-        <p className="category-badge">
+        </motion.p>
+        <motion.p 
+          className="category-badge"
+          initial={{ scale: 0.8 }}
+          animate={{ scale: 1 }}
+          transition={{ delay: 0.2 }}
+        >
           {isRandomFactMode ? (
             <>
               {currentPlayer.icon} {currentPlayer.category}
@@ -483,10 +648,14 @@ function RevealScreen({ gameEngine }) {
           ) : (
             `Categoria: ${currentPlayer.category}`
           )}
-        </p>
+        </motion.p>
 
         {gameMode === GAME_MODES.CLASSIC && (
-          <div className={`hint-card ${useHints && currentPlayer.isImposter && isRevealed ? '' : 'placeholder'}`}>
+          <motion.div 
+            className={`hint-card ${useHints && currentPlayer.isImposter && isRevealed ? '' : 'placeholder'}`}
+            animate={{ scale: isRevealed && useHints && currentPlayer.isImposter ? [1, 1.02, 1] : 1 }}
+            transition={{ duration: 0.3 }}
+          >
             {useHints && currentPlayer.isImposter && isRevealed ? (
               <>
                 <strong>Pista:</strong> {currentHint}
@@ -494,75 +663,89 @@ function RevealScreen({ gameEngine }) {
             ) : (
               <span className="hint-empty">Pista reservada</span>
             )}
+          </motion.div>
+        )}
+
+        <motion.div
+          className={`reveal-card-3d reveal-card-3d-${getCardStyle()}`}
+          onClick={() => {
+            setIsRevealed((prev) => {
+              const next = !prev;
+              if (next) {
+                setHasSeenWord(true);
+              }
+              return next;
+            });
+          }}
+          initial={false}
+          animate={{ 
+            rotateY: isRevealed ? 180 : 0,
+            scale: isRevealed ? 0.98 : 1
+          }}
+          transition={{ duration: 0.5, type: 'spring', stiffness: 300, damping: 25 }}
+          whileHover={{ scale: isRevealed ? 0.98 : 1.02 }}
+          whileTap={{ scale: 0.96 }}
+        >
+          <div className="reveal-card-3d-face reveal-card-3d-front">
+            <motion.div
+              animate={{ scale: [1, 1.1, 1], opacity: [0.8, 1, 0.8] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              <span className="reveal-card-icon">👁️</span>
+            </motion.div>
+            <span className="reveal-card-hint">Toca para revelar</span>
           </div>
-        )}
-
-        {isRandomFactMode ? (
-          <button
-            type="button"
-            className={`reveal-card fact-card ${isRevealed ? 'holding' : ''} ${currentPlayer.isImposter && isRevealed ? 'imposter' : ''}`}
-            onClick={() => {
-              setIsRevealed((prev) => {
-                const next = !prev;
-                if (next) {
-                  setHasSeenWord(true);
-                }
-                return next;
-              });
-            }}
-          >
-            {!isRevealed ? (
+          
+          <div className="reveal-card-3d-face reveal-card-3d-back">
+            <span className="reveal-card-role">
+              {currentPlayer.isImposter ? '👹 Impostor' : '✅ Ciudadano'}
+            </span>
+            {!isRandomFactMode ? (
               <>
-                <p className="small">Click para revelar</p>
-                <h4><FaEyeSlash /></h4>
-              </>
-            ) : currentPlayer.isImposter ? (
-              <>
-                <p className="small">Sos el impostor</p>
-                <h4 className="fact-text">Inventa un dato convincente</h4>
-                <p className="fact-hint">Piensa en algo que suene real de Argentina</p>
+                <h4 className="reveal-card-word">
+                  {currentPlayer.isImposter ? 'Adivina la palabra...' : currentPlayer.word}
+                </h4>
+                {useHints && currentPlayer.isImposter && currentHint && (
+                  <span className="reveal-card-hint-text">💡 {currentHint}</span>
+                )}
               </>
             ) : (
               <>
-                <p className="small">Tu dato real</p>
-                <h4 className="fact-text">{currentPlayer.fact}</h4>
+                {currentPlayer.isImposter ? (
+                  <>
+                    <h4 className="reveal-card-word">Inventa un dato</h4>
+                    <span className="reveal-card-hint-text">Que suene convinente de Argentina</span>
+                  </>
+                ) : (
+                  <>
+                    <h4 className="reveal-card-fact">{currentPlayer.fact}</h4>
+                  </>
+                )}
               </>
             )}
-          </button>
-        ) : (
-          <button
-            type="button"
-            className={`reveal-card ${isRevealed ? 'holding' : ''} ${currentPlayer.isImposter && isRevealed ? 'imposter' : ''}`}
-            onClick={() => {
-              setIsRevealed((prev) => {
-                const next = !prev;
-                if (next) {
-                  setHasSeenWord(true);
-                }
-                return next;
-              });
-            }}
-          >
-            {!isRevealed ? (
-              <>
-                <p className="small">Click para revelar</p>
-                <h4><FaEyeSlash /></h4>
-              </>
-            ) : (
-              <>
-                <p className="small">{currentPlayer.isImposter ? 'Sos el impostor' : 'Sos inocente'}</p>
-                <h4>{currentPlayer.isImposter ? 'Adivina la palabra' : currentPlayer.word}</h4>
-              </>
-            )}
-          </button>
-        )}
+          </div>
+        </motion.div>
 
-        <button type="button" className="secondary-btn" onClick={handleNext} disabled={!hasSeenWord}>
+        <motion.button 
+          type="button" 
+          className="secondary-btn" 
+          onClick={handleNext} 
+          disabled={!hasSeenWord}
+          whileHover={hasSeenWord ? { scale: 1.02 } : {}}
+          whileTap={hasSeenWord ? { scale: 0.98 } : {}}
+        >
           Confirmar vista
-        </button>
+        </motion.button>
 
-        <p className="round-pill">Ronda {roundNumber}</p>
-      </div>
+        <motion.p 
+          className="round-pill"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+        >
+          Ronda {roundNumber}
+        </motion.p>
+      </motion.div>
     </section>
   );
 }
@@ -579,68 +762,104 @@ function DiscussionScreen({ gameEngine }) {
   };
 
   const canStartVoting = sharedPlayers.size === activePlayers.length;
+  const progressPercent = (sharedPlayers.size / activePlayers.length) * 100;
 
   return (
     <section className="screen discussion-screen">
-      <div className="panel">
+      <motion.div 
+        className="panel"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+      >
         <div className="panel-title-row">
           <h3><FaComments /> Discusion - Ronda {roundNumber}</h3>
         </div>
 
-        <p className="discussion-instruction">
+        <motion.p 
+          className="discussion-instruction"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.1 }}
+        >
           Cada jugador comparte su dato. Cuando todos terminen, pasen a votacion.
-        </p>
+        </motion.p>
 
-        <div className="discussion-grid">
-          {activePlayers.map((player) => {
-            const hasShared = sharedPlayers.has(player.name);
-            return (
-              <div
-                key={player.name}
-                className={`discussion-card ${hasShared ? 'shared' : ''}`}
-              >
-                <img src={player.avatar} alt={player.name} className="discussion-avatar" />
-                <div className="discussion-info">
-                  <strong>{player.name}</strong>
-                  {hasShared ? (
-                    <span className="fact-badge">{player.icon || '🇦🇷'} Dato compartido</span>
-                  ) : (
-                    <span className="pending-badge">Pendiente</span>
-                  )}
-                </div>
-                {!hasShared && (
-                  <button
-                    type="button"
-                    className="share-btn"
-                    onClick={() => handleShareFact(player.name)}
+        <StaggerContainer stagger={0.08}>
+          <div className="discussion-grid">
+            {activePlayers.map((player) => {
+              const hasShared = sharedPlayers.has(player.name);
+              return (
+                <StaggerItem key={player.name}>
+                  <motion.div
+                    className={`discussion-card ${hasShared ? 'shared' : ''}`}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                   >
-                    Compartir
-                  </button>
-                )}
-              </div>
-            );
-          })}
-        </div>
+                    <motion.img 
+                      src={player.avatar} 
+                      alt={player.name} 
+                      className="discussion-avatar"
+                      animate={hasShared ? { scale: [1, 1.1, 1] } : {}}
+                      transition={{ duration: 0.3 }}
+                    />
+                    <div className="discussion-info">
+                      <strong>{player.name}</strong>
+                      <AnimatePresence mode="wait">
+                        {hasShared ? (
+                          <motion.span 
+                            className="fact-badge"
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.8 }}
+                          >
+                            {player.icon || '🇦🇷'} Dato compartido
+                          </motion.span>
+                        ) : (
+                          <motion.span 
+                            className="pending-badge"
+                            animate={{ opacity: [0.7, 1, 0.7] }}
+                            transition={{ duration: 1.5, repeat: Infinity }}
+                          >
+                            Pendiente
+                          </motion.span>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                    {!hasShared && (
+                      <motion.button
+                        type="button"
+                        className="share-btn"
+                        onClick={() => handleShareFact(player.name)}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        Compartir
+                      </motion.button>
+                    )}
+                  </motion.div>
+                </StaggerItem>
+              );
+            })}
+          </div>
+        </StaggerContainer>
 
         <div className="discussion-progress">
           <div className="progress-bar">
-            <div
+            <motion.div
               className="progress-fill"
-              style={{ width: `${(sharedPlayers.size / activePlayers.length) * 100}%` }}
+              initial={{ width: 0 }}
+              animate={{ width: `${progressPercent}%` }}
+              transition={{ duration: 0.5, ease: 'easeOut' }}
             />
           </div>
           <span>{sharedPlayers.size} de {activePlayers.length} compartieron</span>
         </div>
 
-        <button
-          type="button"
-          className="primary-btn"
-          onClick={startVoting}
-          disabled={!canStartVoting}
-        >
+        <GlowButton onClick={startVoting} disabled={!canStartVoting} pulse={canStartVoting}>
           <FaHandshake /> Ir a votacion
-        </button>
-      </div>
+        </GlowButton>
+      </motion.div>
     </section>
   );
 }
@@ -652,40 +871,70 @@ function VotingScreen({ gameEngine }) {
 
   return (
     <section className="screen voting-screen">
-      <div className="panel">
+      <motion.div 
+        className="panel"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+      >
         <div className="panel-title-row">
           <h3>Votacion - Ronda {roundNumber}</h3>
           {isRandomFactMode && (
-            <span className="mode-indicator">Detecta al mentiroso</span>
+            <motion.span 
+              className="mode-indicator"
+              animate={{ scale: [1, 1.05, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              Detecta al mentiroso
+            </motion.span>
           )}
         </div>
 
         {isRandomFactMode && (
-          <p className="voting-hint">
+          <motion.p 
+            className="voting-hint"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.1 }}
+          >
             Vota al jugador que creas que invento su dato. El impostor no tiene un dato real de Argentina.
-          </p>
+          </motion.p>
         )}
 
-        <div className="portrait-grid">
-          {roles.map((player) => (
-            <div className={`portrait-card ${player.isEliminated ? 'eliminated' : ''}`} key={player.name}>
-              <img src={player.avatar} alt={player.name} />
-              <div>
-                <strong>{player.name}</strong>
-                <small>{player.isEliminated ? 'Eliminado' : 'Activo'}</small>
-              </div>
-              <button
-                type="button"
-                className="secondary-btn"
-                disabled={player.isEliminated}
-                onClick={() => votePlayer(player.name)}
-              >
-                {player.isEliminated ? 'Fuera' : 'Votar'}
-              </button>
-            </div>
-          ))}
-        </div>
-      </div>
+        <StaggerContainer stagger={0.05}>
+          <div className="portrait-grid">
+            {roles.map((player) => (
+              <StaggerItem key={player.name}>
+                <motion.div 
+                  className={`portrait-card ${player.isEliminated ? 'eliminated' : ''}`}
+                  whileHover={player.isEliminated ? {} : { scale: 1.02, y: -4 }}
+                  whileTap={player.isEliminated ? {} : { scale: 0.98 }}
+                >
+                  <motion.img 
+                    src={player.avatar} 
+                    alt={player.name}
+                    animate={player.isEliminated ? { filter: 'grayscale(100%)' } : {}}
+                  />
+                  <div>
+                    <strong>{player.name}</strong>
+                    <small>{player.isEliminated ? 'Eliminado' : 'Activo'}</small>
+                  </div>
+                  <motion.button
+                    type="button"
+                    className="secondary-btn"
+                    disabled={player.isEliminated}
+                    onClick={() => votePlayer(player.name)}
+                    whileHover={player.isEliminated ? {} : { scale: 1.05 }}
+                    whileTap={player.isEliminated ? {} : { scale: 0.95 }}
+                  >
+                    {player.isEliminated ? 'Fuera' : 'Votar'}
+                  </motion.button>
+                </motion.div>
+              </StaggerItem>
+            ))}
+          </div>
+        </StaggerContainer>
+      </motion.div>
     </section>
   );
 }
@@ -704,41 +953,95 @@ function EliminationScreen({ gameEngine }) {
 
   return (
     <section className="screen elimination-screen">
-      <div className={`panel elimination-panel dramatic-panel ${isImposter ? 'danger' : 'safe'}`}>
-        <div className="elimination-glow" />
-        <p className={`pill ${isImposter ? 'danger' : ''}`}>
+      <motion.div 
+        className={`panel elimination-panel dramatic-panel ${isImposter ? 'danger' : 'safe'}`}
+        initial={{ opacity: 0, scale: 0.8, filter: 'blur(10px)' }}
+        animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+        transition={{ duration: 0.5, type: 'spring' }}
+      >
+        <motion.div 
+          className="elimination-glow"
+          animate={isImposter ? {
+            scale: [1, 1.2, 1],
+            opacity: [0.5, 0.8, 0.5]
+          } : {}}
+          transition={{ duration: 2, repeat: Infinity }}
+        />
+        <motion.p 
+          className={`pill ${isImposter ? 'danger' : ''}`}
+          initial={{ y: -30, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.2 }}
+        >
           {isImposter ? <FaSkull /> : <FaTriangleExclamation />} Eliminacion
-        </p>
-        <div className="elimination-player">
-          {eliminatedPlayer?.avatar ? <img src={eliminatedPlayer.avatar} alt={eliminatedPlayer.name} /> : null}
+        </motion.p>
+        <motion.div 
+          className="elimination-player"
+          initial={{ scale: 0.5, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.3, type: 'spring' }}
+        >
+          {eliminatedPlayer?.avatar ? (
+            <motion.img 
+              src={eliminatedPlayer.avatar} 
+              alt={eliminatedPlayer.name}
+              animate={{ 
+                scale: [1, 1.05, 1],
+                filter: isImposter ? ['grayscale(0%)', 'grayscale(0%)'] : ['grayscale(0%)', 'grayscale(30%)']
+              }}
+              transition={{ duration: 0.5 }}
+            />
+          ) : null}
           <p className="elimination-kicker">Se fue de la mesa</p>
-          <h3>{eliminatedInfo.name.toUpperCase()}</h3>
-        </div>
-        <p className="elimination-result">
+          <motion.h3
+            animate={isImposter ? { scale: [1, 1.02, 1] } : {}}
+            transition={{ duration: 1.5, repeat: Infinity }}
+          >
+            {eliminatedInfo.name.toUpperCase()}
+          </motion.h3>
+        </motion.div>
+        <motion.p 
+          className="elimination-result"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5, type: 'spring' }}
+        >
           {isImposter 
             ? (isRandomFactMode ? 'Estaba mintiendo.' : 'Era el impostor.') 
             : (isRandomFactMode ? 'Su dato era real.' : 'Era un ciudadano inocente.')}
-        </p>
-        <p className="elimination-text">
+        </motion.p>
+        <motion.p 
+          className="elimination-text"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6 }}
+        >
           {isImposter
             ? 'Gran votacion. Le cortaron el juego al infiltrado.'
             : 'Se equivocaron. El impostor sigue entre ustedes.'}
-        </p>
-        <div className="elimination-meta">
+        </motion.p>
+        <motion.div 
+          className="elimination-meta"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.7 }}
+        >
           <span>{alivePlayers} siguen en juego</span>
           <span>{isImposter ? 'Ventaja ciudadana' : 'Sigue la tension'}</span>
-        </div>
-        <button type="button" className="primary-btn" onClick={confirmElimination}>
+        </motion.div>
+        <GlowButton onClick={confirmElimination} pulse>
           Continuar
-        </button>
-        <InlineAd />
-      </div>
+        </GlowButton>
+      </motion.div>
     </section>
   );
 }
 
 function ResultScreen({ gameEngine }) {
   const { winner, roles, secretWord, resetGame, roundNumber, gameMode } = gameEngine;
+  const confettiFiredRef = useRef(false);
+  const { fireArgentina, fireImposter } = useConfetti();
+  
   const isCitizensWinner = winner === 'CITIZENS';
   const imposters = roles.filter((role) => role.isImposter);
   const backupWord = roles.find((role) => !role.isImposter)?.word;
@@ -746,27 +1049,97 @@ function ResultScreen({ gameEngine }) {
   const eliminatedCount = roles.filter((role) => role.isEliminated).length;
   const isRandomFactMode = gameMode === GAME_MODES.RANDOM_FACT;
 
+  useEffect(() => {
+    if (!confettiFiredRef.current) {
+      confettiFiredRef.current = true;
+      if (isCitizensWinner) {
+        fireArgentina();
+      } else {
+        fireImposter();
+      }
+    }
+  }, [isCitizensWinner, fireArgentina, fireImposter]);
+
   return (
     <section className={`screen result-screen ${isCitizensWinner ? '' : 'dark'}`}>
-      <div className="panel result-panel dramatic-panel">
-        <div className={`result-hero ${isCitizensWinner ? 'citizens' : 'imposters'}`}>
+      <FloatingParticles count={isCitizensWinner ? 30 : 0} className="result-particles" />
+      <motion.div 
+        className="panel result-panel dramatic-panel"
+        initial={{ opacity: 0, scale: 0.9, y: 30 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ duration: 0.5, type: 'spring' }}
+      >
+        <motion.div 
+          className={`result-hero ${isCitizensWinner ? 'citizens' : 'imposters'}`}
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.2 }}
+        >
           {isCitizensWinner ? (
             <div className="citizen-win">
-              <div className="citizen-cup">
-                <FaTrophy />
-              </div>
-              <h3>Ganaron los ciudadanos</h3>
-              <p>La mesa detecto al infiltrado a tiempo.</p>
+              <motion.div 
+                className="citizen-cup"
+                animate={{ 
+                  rotate: [0, -5, 5, -5, 0],
+                  scale: [1, 1.1, 1]
+                }}
+                transition={{ duration: 0.6, delay: 0.5 }}
+              >
+                <motion.div
+                  animate={{ y: [0, -10, 0] }}
+                  transition={{ duration: 2, repeat: Infinity, delay: 1 }}
+                >
+                  <FaTrophy />
+                </motion.div>
+              </motion.div>
+              <motion.h3
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+              >
+                Ganaron los ciudadanos
+              </motion.h3>
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.6 }}
+              >
+                La mesa detecto al infiltrado a tiempo.
+              </motion.p>
             </div>
           ) : (
             <div className="impostor-win">
-              <img src={samidViale} alt="Impostor ganador" />
-              <p>El chamuyo fue perfecto: el impostor sobrevivio.</p>
+              <motion.img 
+                src={samidViale} 
+                alt="Impostor ganador"
+                initial={{ opacity: 0, scale: 1.2 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.3 }}
+              />
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
+              >
+                El chamuyo fue perfecto: el impostor sobrevivio.
+              </motion.p>
             </div>
           )}
-        </div>
-        <p className="result-title">{isCitizensWinner ? 'Vamos Argentina' : 'Gano el impostor'}</p>
-        <div className="result-summary">
+        </motion.div>
+        <motion.p 
+          className="result-title"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.7 }}
+        >
+          {isCitizensWinner ? 'Vamos Argentina' : 'Gano el impostor'}
+        </motion.p>
+        <motion.div 
+          className="result-summary"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8 }}
+        >
           <div className="result-stat">
             <span>Ronda final</span>
             <strong>{roundNumber}</strong>
@@ -775,63 +1148,56 @@ function ResultScreen({ gameEngine }) {
             <span>Eliminados</span>
             <strong>{eliminatedCount}</strong>
           </div>
-        </div>
+        </motion.div>
 
-        {imposters.map((imposter) => (
-          <div className="imposter-row" key={imposter.name}>
-            <span><FaUserSecret /></span>
-            <p>{imposter.name.toUpperCase()}</p>
-          </div>
-        ))}
+        <StaggerContainer delay={0.9} stagger={0.1}>
+          {imposters.map((imposter) => (
+            <StaggerItem key={imposter.name}>
+              <motion.div 
+                className="imposter-row"
+                whileHover={{ scale: 1.02, x: 5 }}
+              >
+                <span><FaUserSecret /></span>
+                <p>{imposter.name.toUpperCase()}</p>
+              </motion.div>
+            </StaggerItem>
+          ))}
+        </StaggerContainer>
 
         {!isRandomFactMode && (
-          <p className="secret-word">Palabra secreta: {displayWord.toUpperCase()}</p>
+          <motion.p 
+            className="secret-word"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1 }}
+          >
+            Palabra secreta: {displayWord.toUpperCase()}
+          </motion.p>
         )}
 
-        <div className="result-actions">
-          <button type="button" className="primary-btn" onClick={resetGame}>
+        <motion.div 
+          className="result-actions"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.1 }}
+        >
+          <GlowButton onClick={resetGame} pulse>
             Revancha
-          </button>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function LoadingSplash() {
-  return (
-    <section className="screen loading-screen">
-      <video className="loading-video" src={loadingVideo} autoPlay muted playsInline preload="auto" />
-      <div className="loading-mask" />
-      <div className="loading-badge">
-        <img src={mateIcon} alt="Mate" />
-        <p>Cargando partida...</p>
-      </div>
+          </GlowButton>
+        </motion.div>
+      </motion.div>
     </section>
   );
 }
 
 function App() {
-  const [showSplash, setShowSplash] = useState(true);
   const gameEngine = useGameEngine();
-
-  useEffect(() => {
-    const timer = setTimeout(() => setShowSplash(false), 3600);
-    return () => clearTimeout(timer);
-  }, []);
 
   let screen = null;
   let subtitle = '';
   let darkHeader = false;
   let backHandler = gameEngine.goHome;
-
-  if (showSplash) {
-    return (
-      <div className="phone-viewport">
-        <LoadingSplash />
-      </div>
-    );
-  }
+  let isDramatic = false;
 
   if (gameEngine.gameState === GAME_STATES.HOME) {
     screen = <ModeSelectScreen gameEngine={gameEngine} />;
@@ -856,19 +1222,21 @@ function App() {
     screen = <EliminationScreen gameEngine={gameEngine} />;
     subtitle = 'Eliminacion';
     backHandler = null;
+    isDramatic = true;
   } else if (gameEngine.gameState === GAME_STATES.RESULT) {
     screen = <ResultScreen gameEngine={gameEngine} />;
     subtitle = 'Partida finalizada';
     darkHeader = gameEngine.winner === 'IMPOSTERS';
+    isDramatic = true;
   }
 
   return (
     <div className="phone-viewport">
       <main className="app-shell">
         <GameHeader subtitle={subtitle} onBack={backHandler} dark={darkHeader} />
-        <div key={gameEngine.gameState} className="screen-transition">
+        <PageTransition stateKey={gameEngine.gameState} dramatic={isDramatic}>
           {screen}
-        </div>
+        </PageTransition>
       </main>
     </div>
   );
