@@ -71,7 +71,7 @@ export function RevealCard({
       whileHover={shouldAnimate ? { scale: isRevealed ? 0.98 : 1.02 } : {}}
       whileTap={shouldAnimate ? { scale: 0.96 } : {}}
     >
-      <div className="reveal-card-3d-face reveal-card-3d-front">
+      <div className="reveal-card-3d-face reveal-card-3d-front" style={{ opacity: isRevealed ? 0 : 1 }}>
         <motion.div
           animate={shouldAnimate ? { scale: [1, 1.1, 1] } : {}}
           transition={{ duration: 2, repeat: Infinity }}
@@ -86,7 +86,7 @@ export function RevealCard({
           {isImposter ? '👹 Impostor' : '✅ Ciudadano'}
         </span>
         {!isFactMode ? (
-          <>
+          <div className="reveal-card-content">
             <span className="reveal-card-category">{category}</span>
             <h4 className="reveal-card-word">
               {isImposter ? 'Adivina la palabra...' : word}
@@ -94,9 +94,9 @@ export function RevealCard({
             {hint && showHint && isImposter && (
               <span className="reveal-card-hint-text">💡 {hint}</span>
             )}
-          </>
+          </div>
         ) : (
-          <>
+          <div className="reveal-card-content">
             {isImposter ? (
               <>
                 <h4 className="reveal-card-word">Inventa un dato</h4>
@@ -108,7 +108,7 @@ export function RevealCard({
                 <h4 className="reveal-card-fact">{fact}</h4>
               </>
             )}
-          </>
+          </div>
         )}
       </div>
     </motion.div>

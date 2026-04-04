@@ -54,6 +54,8 @@
   transform-style: preserve-3d;
   position: relative;
   box-shadow: 0 18px 40px rgba(11, 27, 47, 0.25);
+  -webkit-perspective: 1200px;
+  -webkit-transform-style: preserve-3d;
 }
 
 .reveal-card-3d:hover {
@@ -90,12 +92,29 @@
   gap: 12px;
   padding: 20px;
   backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
   border-radius: 24px;
   color: white;
+  transition: opacity 0.3s ease;
+}
+
+.reveal-card-3d-front {
+  pointer-events: auto;
 }
 
 .reveal-card-3d-back {
   transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+}
+
+.reveal-card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .reveal-card-icon {
@@ -115,32 +134,84 @@
   padding: 6px 16px;
   background: rgba(255, 255, 255, 0.2);
   border-radius: 999px;
+  flex-shrink: 0;
 }
 
 .reveal-card-category {
   font-size: 11px;
   text-transform: uppercase;
   opacity: 0.8;
+  flex-shrink: 0;
 }
 
 .reveal-card-word {
-  font-size: clamp(1.5rem, 8vw, 2.2rem);
+  font-size: clamp(1.2rem, 6vw, 2.2rem);
   text-align: center;
-  line-height: 1.1;
+  line-height: 1.2;
   font-family: 'Bebas Neue', sans-serif;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  max-width: 100%;
+  margin: 0;
 }
 
 .reveal-card-fact {
-  font-size: 1rem;
+  font-size: clamp(0.9rem, 4vw, 1rem);
   text-align: center;
-  line-height: 1.3;
-  max-width: 260px;
+  line-height: 1.4;
+  max-width: 100%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .reveal-card-hint-text {
   font-size: 12px;
   opacity: 0.85;
-  margin-top: 8px;
+  margin-top: 4px;
+  line-height: 1.4;
+  text-align: center;
+  max-width: 90%;
+}
+
+@media (max-width: 380px) {
+  .reveal-card-3d {
+    min-height: 180px;
+  }
+  
+  .reveal-card-3d-face {
+    padding: 16px;
+    gap: 8px;
+  }
+  
+  .reveal-card-icon {
+    font-size: 36px;
+  }
+  
+  .reveal-card-role {
+    font-size: 11px;
+    padding: 5px 12px;
+  }
+  
+  .reveal-card-word {
+    font-size: clamp(1rem, 5.5vw, 1.5rem);
+  }
+  
+  .reveal-card-fact {
+    font-size: 0.85rem;
+  }
+  
+  .reveal-card-hint {
+    font-size: 10px;
+  }
+  
+  .reveal-card-hint-text {
+    font-size: 11px;
+  }
+  
+  .reveal-card-content {
+    gap: 6px;
+  }
 }
 
 .btn-3d {
