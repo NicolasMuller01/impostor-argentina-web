@@ -1603,6 +1603,172 @@ p {
   font-weight: 500;
 }
 
+.game-information {
+  display: grid;
+  gap: 14px;
+  padding-top: 4px;
+  border-top: 1px solid rgba(31, 134, 209, 0.16);
+}
+
+.content-intro {
+  display: grid;
+  gap: 7px;
+}
+
+.content-eyebrow {
+  color: #277db7;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+}
+
+.content-intro h2 {
+  color: #0d2b4a;
+  font-size: 27px;
+  line-height: 0.98;
+}
+
+.content-intro > p:last-child {
+  color: #3a5068;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.information-grid,
+.information-columns {
+  display: grid;
+  gap: 9px;
+}
+
+.information-card,
+.information-panel {
+  border: 1px solid rgba(31, 134, 209, 0.19);
+  border-radius: 15px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(241, 248, 255, 0.88));
+  padding: 13px;
+}
+
+.information-card {
+  display: grid;
+  gap: 5px;
+}
+
+.information-number {
+  color: #e3a21e;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+}
+
+.information-card h3,
+.information-panel h3 {
+  color: #123b60;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.information-card p,
+.information-panel p,
+.information-panel li {
+  color: #45617d;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.information-panel {
+  display: grid;
+  gap: 9px;
+}
+
+.information-panel ul {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+  padding-left: 18px;
+}
+
+.information-panel li::marker {
+  color: #2694e8;
+}
+
+.faq-panel details {
+  border-top: 1px solid rgba(31, 134, 209, 0.15);
+  padding-top: 8px;
+}
+
+.faq-panel summary {
+  color: #1e4f78;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.faq-panel details p {
+  margin-top: 6px;
+}
+
+.information-source-note {
+  border-left: 3px solid #f0b429;
+  border-radius: 8px;
+  background: rgba(246, 191, 59, 0.11);
+  color: #526b84;
+  font-size: 11px;
+  line-height: 1.5;
+  padding: 9px 10px;
+}
+
+.information-source-note strong {
+  color: #765317;
+}
+
+.inline-ad {
+  min-height: 90px;
+  margin-top: 28px;
+  padding: 10px;
+  text-align: center;
+}
+
+.inline-ad-label {
+  display: block;
+  margin-bottom: 6px;
+  color: #70869e;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+
+.site-footer {
+  display: grid;
+  gap: 8px;
+  padding-top: 7px;
+  border-top: 1px solid rgba(31, 134, 209, 0.16);
+  color: #5d7894;
+}
+
+.site-footer p {
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.site-footer nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px 10px;
+}
+
+.site-footer a {
+  color: #1b71ad;
+  font-size: 11px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.site-footer a:hover {
+  text-decoration: underline;
+}
+
 .mode-badge {
   display: inline-block;
   font-size: 10px;

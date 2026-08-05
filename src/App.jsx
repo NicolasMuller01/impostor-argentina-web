@@ -21,7 +21,6 @@ import { FACT_CATEGORIES } from './data/facts';
 import { AVATARS } from './assets/avatars';
 import samidViale from './assets/samid_viale.png';
 import image1 from './assets/image1.png';
-import image2 from './assets/image2.png';
 import { GAME_STATES, GAME_MODES, useGameEngine } from './hooks/useGameEngine';
 import { PageTransition, StaggerContainer, StaggerItem } from './components/PageTransition';
 import { Button3D, GlowButton } from './components/ui/Button3D';
@@ -173,7 +172,138 @@ function ModeSelectScreen({ gameEngine }) {
             ))}
           </div>
         </motion.div>
+
+        <GameInformation />
       </motion.div>
+    </section>
+  );
+}
+
+function AdSenseUnit() {
+  const adRef = useRef(null);
+  const adLoadedRef = useRef(false);
+  const adSlotId = import.meta.env.VITE_ADSENSE_SLOT_ID;
+
+  useEffect(() => {
+    if (!adSlotId || !adRef.current || adLoadedRef.current) {
+      return;
+    }
+
+    adLoadedRef.current = true;
+    try {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } catch {
+      // The ad script can be blocked by the browser or a consent setting.
+      adLoadedRef.current = false;
+    }
+  }, [adSlotId]);
+
+  if (!adSlotId) {
+    return null;
+  }
+
+  return (
+    <aside className="inline-ad" aria-label="Publicidad">
+      <span className="inline-ad-label">Anuncio</span>
+      <ins
+        ref={adRef}
+        className="adsbygoogle"
+        style={{ display: 'block', minHeight: 90 }}
+        data-ad-client="ca-pub-9690532137867207"
+        data-ad-slot={adSlotId}
+        data-ad-format="auto"
+        data-full-width-responsive="true"
+      />
+    </aside>
+  );
+}
+
+function GameInformation() {
+  return (
+    <section className="game-information" aria-labelledby="game-information-title">
+      <div className="content-intro">
+        <p className="content-eyebrow">Una mesa, muchas teorias</p>
+        <h2 id="game-information-title">El Impostor Argentino: juego de deduccion para compartir</h2>
+        <p>
+          El Impostor Argentino es un juego social para jugar en la misma pantalla con amigos o familia.
+          Cada persona recibe una consigna privada, participa de la charla y usa sus argumentos para
+          descubrir quien esta improvisando. No hace falta registrarse ni descargar una aplicacion.
+        </p>
+      </div>
+
+      <div className="information-grid">
+        <article className="information-card">
+          <span className="information-number">01</span>
+          <h3>Preparar la partida</h3>
+          <p>
+            Reunan al menos tres personas, elijan un modo y carguen un nombre para cada jugador.
+            Pasen el telefono de mano en mano: la tarjeta solo se revela cuando la mira su dueño.
+          </p>
+        </article>
+        <article className="information-card">
+          <span className="information-number">02</span>
+          <h3>Hablar sin regalarse</h3>
+          <p>
+            En el modo Clasico, los ciudadanos conocen una palabra y el impostor recibe una pista.
+            Describan la idea sin nombrarla de forma obvia para que la ronda tenga lugar para el debate.
+          </p>
+        </article>
+        <article className="information-card">
+          <span className="information-number">03</span>
+          <h3>Detectar el chamuyo</h3>
+          <p>
+            En Dato Random, cada ciudadano recibe un dato de Argentina y el impostor inventa uno.
+            Escuchen los detalles, hagan preguntas y voten despues de que todos hayan participado.
+          </p>
+        </article>
+      </div>
+
+      <div className="information-columns">
+        <article className="information-panel">
+          <h3>Consejos para una mejor ronda</h3>
+          <ul>
+            <li>No miren la pantalla cuando otra persona esta revelando su tarjeta.</li>
+            <li>Usen pistas que permitan conversar, no respuestas que delaten la palabra.</li>
+            <li>Escuchen el razonamiento completo antes de votar.</li>
+            <li>Si una ronda termina, cambien de categoria para mantener la sorpresa.</li>
+          </ul>
+        </article>
+
+        <article className="information-panel faq-panel">
+          <h3>Preguntas frecuentes</h3>
+          <details>
+            <summary>Cuantas personas pueden jugar?</summary>
+            <p>La partida funciona desde 3 jugadores y admite tantos como avatares disponibles en la configuracion.</p>
+          </details>
+          <details>
+            <summary>Se guarda mi nombre?</summary>
+            <p>No. Los nombres se usan durante la partida actual y se eliminan al volver al inicio.</p>
+          </details>
+          <details>
+            <summary>Que pasa si alguien ve una tarjeta ajena?</summary>
+            <p>Reinicien la ronda desde Configurar partida. La gracia del juego depende de mantener las consignas privadas.</p>
+          </details>
+        </article>
+      </div>
+
+      <div className="information-source-note">
+        <strong>Contenido editorial:</strong> las reglas y las consignas fueron preparadas para esta experiencia.
+        Si en el modo Dato Random detectas un dato desactualizado, podes avisarnos desde la pagina de contacto
+        para revisarlo.
+      </div>
+
+      <AdSenseUnit />
+
+      <footer className="site-footer">
+        <p>El Impostor Argentino</p>
+        <nav aria-label="Informacion del sitio">
+          <a href="/como-jugar.html">Como jugar</a>
+          <a href="/sobre-el-juego.html">Sobre el juego</a>
+          <a href="/privacidad.html">Privacidad</a>
+          <a href="/terminos.html">Terminos</a>
+          <a href="/contacto.html">Contacto</a>
+        </nav>
+      </footer>
     </section>
   );
 }
@@ -666,65 +796,83 @@ function RevealScreen({ gameEngine }) {
           </motion.div>
         )}
 
-        <motion.div
-          className={`reveal-card-3d reveal-card-3d-${getCardStyle()}`}
-          onClick={() => {
-            setIsRevealed((prev) => {
-              const next = !prev;
-              if (next) {
-                setHasSeenWord(true);
+        <div className="reveal-card-3d-container">
+          <motion.div
+            className={`reveal-card-3d reveal-card-3d-${getCardStyle()}`}
+            onClick={() => {
+              setIsRevealed((prev) => {
+                const next = !prev;
+                if (next) {
+                  setHasSeenWord(true);
+                }
+                return next;
+              });
+            }}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                setIsRevealed((prev) => {
+                  const next = !prev;
+                  if (next) {
+                    setHasSeenWord(true);
+                  }
+                  return next;
+                });
               }
-              return next;
-            });
-          }}
-          initial={false}
-          animate={{ 
-            rotateY: isRevealed ? 180 : 0,
-            scale: isRevealed ? 0.98 : 1
-          }}
-          transition={{ duration: 0.5, type: 'spring', stiffness: 300, damping: 25 }}
-          whileHover={{ scale: isRevealed ? 0.98 : 1.02 }}
-          whileTap={{ scale: 0.96 }}
-        >
-          <div className="reveal-card-3d-face reveal-card-3d-front">
-            <motion.div
-              animate={{ scale: [1, 1.1, 1], opacity: [0.8, 1, 0.8] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            >
-              <span className="reveal-card-icon">👁️</span>
-            </motion.div>
-            <span className="reveal-card-hint">Toca para revelar</span>
-          </div>
-          
-          <div className="reveal-card-3d-face reveal-card-3d-back">
-            <span className="reveal-card-role">
-              {currentPlayer.isImposter ? '👹 Impostor' : '✅ Ciudadano'}
-            </span>
-            {!isRandomFactMode ? (
-              <>
-                <h4 className="reveal-card-word">
-                  {currentPlayer.isImposter ? 'Adivina la palabra...' : currentPlayer.word}
-                </h4>
-                {useHints && currentPlayer.isImposter && currentHint && (
-                  <span className="reveal-card-hint-text">💡 {currentHint}</span>
-                )}
-              </>
-            ) : (
-              <>
-                {currentPlayer.isImposter ? (
-                  <>
-                    <h4 className="reveal-card-word">Inventa un dato</h4>
-                    <span className="reveal-card-hint-text">Que suene convinente de Argentina</span>
-                  </>
-                ) : (
-                  <>
-                    <h4 className="reveal-card-fact">{currentPlayer.fact}</h4>
-                  </>
-                )}
-              </>
-            )}
-          </div>
-        </motion.div>
+            }}
+            role="button"
+            tabIndex={0}
+            aria-label={isRevealed ? 'Ocultar tarjeta' : 'Revelar tarjeta'}
+            initial={false}
+            animate={{
+              rotateY: isRevealed ? 180 : 0,
+              scale: isRevealed ? 0.98 : 1
+            }}
+            transition={{ duration: 0.5, type: 'spring', stiffness: 300, damping: 25 }}
+            whileHover={{ scale: isRevealed ? 0.98 : 1.02 }}
+            whileTap={{ scale: 0.96 }}
+            style={{ transformStyle: 'preserve-3d', WebkitTransformStyle: 'preserve-3d' }}
+          >
+            <div className="reveal-card-3d-face reveal-card-3d-front">
+              <motion.div
+                animate={{ scale: [1, 1.1, 1], opacity: [0.8, 1, 0.8] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                <span className="reveal-card-icon">👁️</span>
+              </motion.div>
+              <span className="reveal-card-hint">Toca para revelar</span>
+            </div>
+
+            <div className="reveal-card-3d-face reveal-card-3d-back">
+              <span className="reveal-card-role">
+                {currentPlayer.isImposter ? '👹 Impostor' : '✅ Ciudadano'}
+              </span>
+              {!isRandomFactMode ? (
+                <>
+                  <h4 className="reveal-card-word">
+                    {currentPlayer.isImposter ? 'Adivina la palabra...' : currentPlayer.word}
+                  </h4>
+                  {useHints && currentPlayer.isImposter && currentHint && (
+                    <span className="reveal-card-hint-text">💡 {currentHint}</span>
+                  )}
+                </>
+              ) : (
+                <>
+                  {currentPlayer.isImposter ? (
+                    <>
+                      <h4 className="reveal-card-word">Inventa un dato</h4>
+                      <span className="reveal-card-hint-text">Que suene convincente de Argentina</span>
+                    </>
+                  ) : (
+                    <>
+                      <h4 className="reveal-card-fact">{currentPlayer.fact}</h4>
+                    </>
+                  )}
+                </>
+              )}
+            </div>
+          </motion.div>
+        </div>
 
         <motion.button 
           type="button" 

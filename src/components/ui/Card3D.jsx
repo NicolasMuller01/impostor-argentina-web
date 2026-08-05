@@ -59,59 +59,71 @@ export function RevealCard({
     : (isImposter ? 'imposter' : 'citizen');
   
   return (
-    <motion.div
-      className={`reveal-card-3d reveal-card-3d-${variant}`}
-      onClick={onReveal}
-      initial={false}
-      animate={{ 
-        rotateY: isRevealed ? 180 : 0,
-        scale: isRevealed ? 0.98 : 1
-      }}
-      transition={shouldAnimate ? { duration: 0.5, ease: [0.22, 1, 0.36, 1] } : { duration: 0 }}
-      whileHover={shouldAnimate ? { scale: isRevealed ? 0.98 : 1.02 } : {}}
-      whileTap={shouldAnimate ? { scale: 0.96 } : {}}
-    >
-      <div className="reveal-card-3d-face reveal-card-3d-front" style={{ opacity: isRevealed ? 0 : 1 }}>
-        <motion.div
-          animate={shouldAnimate ? { scale: [1, 1.1, 1] } : {}}
-          transition={{ duration: 2, repeat: Infinity }}
-        >
-          <span className="reveal-card-icon">👁️</span>
-        </motion.div>
-        <span className="reveal-card-hint">Toca para revelar</span>
-      </div>
-      
-      <div className="reveal-card-3d-face reveal-card-3d-back">
-        <span className="reveal-card-role">
-          {isImposter ? '👹 Impostor' : '✅ Ciudadano'}
-        </span>
-        {!isFactMode ? (
-          <div className="reveal-card-content">
-            <span className="reveal-card-category">{category}</span>
-            <h4 className="reveal-card-word">
-              {isImposter ? 'Adivina la palabra...' : word}
-            </h4>
-            {hint && showHint && isImposter && (
-              <span className="reveal-card-hint-text">💡 {hint}</span>
-            )}
-          </div>
-        ) : (
-          <div className="reveal-card-content">
-            {isImposter ? (
-              <>
-                <h4 className="reveal-card-word">Inventa un dato</h4>
-                <span className="reveal-card-hint-text">Que suene convincente</span>
-              </>
-            ) : (
-              <>
-                <span className="reveal-card-category">{categoryIcon} {category}</span>
-                <h4 className="reveal-card-fact">{fact}</h4>
-              </>
-            )}
-          </div>
-        )}
-      </div>
-    </motion.div>
+    <div className="reveal-card-3d-container">
+      <motion.div
+        className={`reveal-card-3d reveal-card-3d-${variant}`}
+        onClick={onReveal}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            onReveal?.();
+          }
+        }}
+        role={onReveal ? 'button' : undefined}
+        tabIndex={onReveal ? 0 : undefined}
+        aria-label={isRevealed ? 'Ocultar tarjeta' : 'Revelar tarjeta'}
+        initial={false}
+        animate={{
+          rotateY: isRevealed ? 180 : 0,
+          scale: isRevealed ? 0.98 : 1
+        }}
+        transition={shouldAnimate ? { duration: 0.5, ease: [0.22, 1, 0.36, 1] } : { duration: 0 }}
+        whileHover={shouldAnimate ? { scale: isRevealed ? 0.98 : 1.02 } : {}}
+        whileTap={shouldAnimate ? { scale: 0.96 } : {}}
+        style={{ transformStyle: 'preserve-3d', WebkitTransformStyle: 'preserve-3d' }}
+      >
+        <div className="reveal-card-3d-face reveal-card-3d-front" style={{ opacity: isRevealed ? 0 : 1 }}>
+          <motion.div
+            animate={shouldAnimate ? { scale: [1, 1.1, 1] } : {}}
+            transition={{ duration: 2, repeat: Infinity }}
+          >
+            <span className="reveal-card-icon">👁️</span>
+          </motion.div>
+          <span className="reveal-card-hint">Toca para revelar</span>
+        </div>
+
+        <div className="reveal-card-3d-face reveal-card-3d-back">
+          <span className="reveal-card-role">
+            {isImposter ? '👹 Impostor' : '✅ Ciudadano'}
+          </span>
+          {!isFactMode ? (
+            <div className="reveal-card-content">
+              <span className="reveal-card-category">{category}</span>
+              <h4 className="reveal-card-word">
+                {isImposter ? 'Adivina la palabra...' : word}
+              </h4>
+              {hint && showHint && isImposter && (
+                <span className="reveal-card-hint-text">💡 {hint}</span>
+              )}
+            </div>
+          ) : (
+            <div className="reveal-card-content">
+              {isImposter ? (
+                <>
+                  <h4 className="reveal-card-word">Inventa un dato</h4>
+                  <span className="reveal-card-hint-text">Que suene convincente</span>
+                </>
+              ) : (
+                <>
+                  <span className="reveal-card-category">{categoryIcon} {category}</span>
+                  <h4 className="reveal-card-fact">{fact}</h4>
+                </>
+              )}
+            </div>
+          )}
+        </div>
+      </motion.div>
+    </div>
   );
 }
 

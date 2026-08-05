@@ -45,8 +45,14 @@
   background: linear-gradient(160deg, #ef6a6a, #7f1d1d 65%);
 }
 
-.reveal-card-3d {
+.reveal-card-3d-container {
   perspective: 1200px;
+  -webkit-perspective: 1200px;
+  width: 100%;
+  min-height: 200px;
+}
+
+.reveal-card-3d {
   width: 100%;
   min-height: 200px;
   border-radius: 26px;
@@ -54,7 +60,6 @@
   transform-style: preserve-3d;
   position: relative;
   box-shadow: 0 18px 40px rgba(11, 27, 47, 0.25);
-  -webkit-perspective: 1200px;
   -webkit-transform-style: preserve-3d;
 }
 
@@ -175,6 +180,10 @@
 }
 
 @media (max-width: 380px) {
+  .reveal-card-3d-container {
+    min-height: 180px;
+  }
+
   .reveal-card-3d {
     min-height: 180px;
   }
