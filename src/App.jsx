@@ -67,21 +67,20 @@ function ModeSelectScreen({ gameEngine }) {
           transition={{ delay: 0.1, duration: 0.3 }}
         >
           <div className="mode-hero-content">
-            <FloatingIcon icon={<img src={image1} alt="Impostor" />} size={50}>
-              </FloatingIcon>
+            <div className="home-emblem" aria-hidden="true"><FaUserSecret /></div>
             <motion.h2
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
             >
-              Elegi el modo de juego
+              Elegí cómo jugar
             </motion.h2>
             <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
             >
-              Cada modo tiene sus propias reglas y mecanicas
+              Palabras secretas, pistas y mucho chamuyo.
             </motion.p>
           </div>
         </motion.div>
@@ -104,14 +103,15 @@ function ModeSelectScreen({ gameEngine }) {
                     <FaUserSecret />
                   </motion.div>
                 </div>
-                <h3>Modo Clasico</h3>
-                <p>El original: Un jugador es el impostor y debe adivinar la palabra secreta mientras los demas la conocen.</p>
+                <h3>Modo Clásico</h3>
+                <p>Todos conocen la palabra, menos el impostor. Da tu pista y descubrí quién está improvisando.</p>
                 <ul className="mode-features">
                   <li>Palabra secreta para civiles</li>
                   <li>Impostor recibe pista</li>
                   <li>Votacion por sospechoso</li>
                 </ul>
-                <span className="mode-tag">Original</span>
+                <span className="mode-tag">Empezá por acá</span>
+                <span className="mode-start">Jugar al Clásico <span aria-hidden="true">→</span></span>
               </motion.button>
             </StaggerItem>
 
@@ -132,46 +132,18 @@ function ModeSelectScreen({ gameEngine }) {
                   </motion.div>
                 </div>
                 <h3>Dato Random</h3>
-                <p>Cada jugador recibe un dato real de Argentina. El impostor debe inventar un dato convincente para no ser descubierto.</p>
+                <p>Los ciudadanos reciben datos de Argentina. El impostor inventa el suyo: ¿podés detectar el chamuyo?</p>
                 <ul className="mode-features">
                   <li>Datos reales de Argentina</li>
                   <li>Impostor inventa su dato</li>
                   <li>Detecta al mentiroso</li>
                 </ul>
                 <span className="mode-tag new">Nuevo</span>
+                <span className="mode-alternative">Probar Dato Random <span aria-hidden="true">→</span></span>
               </motion.button>
             </StaggerItem>
           </div>
         </StaggerContainer>
-
-        <motion.div 
-          className="mode-info-panel"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-        >
-          <h4>Como funciona Dato Random?</h4>
-          <div className="mode-info-steps">
-            {[1, 2, 3, 4].map((num, idx) => (
-              <motion.div 
-                key={num}
-                className="mode-info-step"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.6 + idx * 0.1 }}
-              >
-                <motion.span 
-                  className="step-number"
-                  animate={{ scale: [1, 1.1, 1] }}
-                  transition={{ duration: 2, repeat: Infinity, delay: idx * 0.3 }}
-                >
-                  {num}
-                </motion.span>
-                <p>{['Cada jugador NO impostor recibe un dato real de Argentina', 'El impostor debe inventar un dato que suene creible', 'Todos comparten su dato en la ronda de discusion', 'Voten al jugador que crean que esta mintiendo'][idx]}</p>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
 
         <GameInformation />
       </motion.div>
@@ -220,94 +192,24 @@ function AdSenseUnit() {
 
 function GameInformation() {
   return (
-    <section className="game-information" aria-labelledby="game-information-title">
-      <div className="content-intro">
-        <p className="content-eyebrow">Una mesa, muchas teorias</p>
-        <h2 id="game-information-title">El Impostor Argentino: juego de deduccion para compartir</h2>
-        <p>
-          El Impostor Argentino es un juego social para jugar en la misma pantalla con amigos o familia.
-          Cada persona recibe una consigna privada, participa de la charla y usa sus argumentos para
-          descubrir quien esta improvisando. No hace falta registrarse ni descargar una aplicacion.
-        </p>
-      </div>
-
-      <div className="information-grid">
-        <article className="information-card">
-          <span className="information-number">01</span>
-          <h3>Preparar la partida</h3>
-          <p>
-            Reunan al menos tres personas, elijan un modo y carguen un nombre para cada jugador.
-            Pasen el telefono de mano en mano: la tarjeta solo se revela cuando la mira su dueño.
-          </p>
-        </article>
-        <article className="information-card">
-          <span className="information-number">02</span>
-          <h3>Hablar sin regalarse</h3>
-          <p>
-            En el modo Clasico, los ciudadanos conocen una palabra y el impostor recibe una pista.
-            Describan la idea sin nombrarla de forma obvia para que la ronda tenga lugar para el debate.
-          </p>
-        </article>
-        <article className="information-card">
-          <span className="information-number">03</span>
-          <h3>Detectar el chamuyo</h3>
-          <p>
-            En Dato Random, cada ciudadano recibe un dato de Argentina y el impostor inventa uno.
-            Escuchen los detalles, hagan preguntas y voten despues de que todos hayan participado.
-          </p>
-        </article>
-      </div>
-
-      <div className="information-columns">
-        <article className="information-panel">
-          <h3>Consejos para una mejor ronda</h3>
-          <ul>
-            <li>No miren la pantalla cuando otra persona esta revelando su tarjeta.</li>
-            <li>Usen pistas que permitan conversar, no respuestas que delaten la palabra.</li>
-            <li>Escuchen el razonamiento completo antes de votar.</li>
-            <li>Si una ronda termina, cambien de categoria para mantener la sorpresa.</li>
-          </ul>
-        </article>
-
-        <article className="information-panel faq-panel">
-          <h3>Preguntas frecuentes</h3>
-          <details>
-            <summary>Cuantas personas pueden jugar?</summary>
-            <p>La partida funciona desde 3 jugadores y admite tantos como avatares disponibles en la configuracion.</p>
-          </details>
-          <details>
-            <summary>Se guarda mi nombre?</summary>
-            <p>No. Los nombres se usan durante la partida actual y se eliminan al volver al inicio.</p>
-          </details>
-          <details>
-            <summary>Que pasa si alguien ve una tarjeta ajena?</summary>
-            <p>Reinicien la ronda desde Configurar partida. La gracia del juego depende de mantener las consignas privadas.</p>
-          </details>
-        </article>
-      </div>
-
-      <div className="information-source-note">
-        <strong>Contenido editorial:</strong> las reglas y las consignas fueron preparadas para esta experiencia.
-        Si en el modo Dato Random detectas un dato desactualizado, podes avisarnos desde la pagina de contacto
-        para revisarlo.
-      </div>
-
-      <AdSenseUnit />
-
-      <footer className="site-footer">
-        <p>El Impostor Argentino</p>
-        <nav aria-label="Informacion del sitio">
-          <a href="/palabras.html">728 palabras</a>
-          <a href="/estrategias.html">Estrategias</a>
+    <footer className="home-links">
+      <nav aria-label="Ayuda para jugar">
+        <a href="/como-jugar.html">Cómo jugar</a>
+        <a href="/palabras.html">Palabras</a>
+        <a href="/estrategias.html">Estrategias</a>
+      </nav>
+      <details className="home-more">
+        <summary>Más sobre el juego</summary>
+        <nav aria-label="Más información">
           <a href="/variantes.html">Variantes</a>
-          <a href="/como-jugar.html">Como jugar</a>
           <a href="/sobre-el-juego.html">Sobre el juego</a>
-          <a href="/privacidad.html">Privacidad</a>
-          <a href="/terminos.html">Terminos</a>
           <a href="/contacto.html">Contacto</a>
+          <a href="/privacidad.html">Privacidad</a>
+          <a href="/terminos.html">Términos</a>
         </nav>
-      </footer>
-    </section>
+      </details>
+      <AdSenseUnit />
+    </footer>
   );
 }
 

@@ -2107,10 +2107,6 @@ p {
     font-size: 20px;
   }
 }
-.site-discovery { width: min(780px, calc(100% - 32px)); margin: 36px auto; padding: 28px; border: 1px solid rgba(20,85,146,.18); border-radius: 24px; background: #fff; line-height: 1.65; }
-.site-discovery h2 { font-family: 'Manrope', 'Segoe UI', sans-serif; font-size: 1.3rem; }
-.site-discovery nav { display: flex; flex-wrap: wrap; gap: 16px; }
-.site-discovery a { color: #126aa5; font-weight: 700; }
 .mode-cards { perspective: 1000px; }
 .mode-card { position: relative; isolation: isolate; }
 .mode-card::after { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: linear-gradient(125deg, rgba(255,255,255,.36), transparent 45%); }
@@ -2118,4 +2114,53 @@ p {
 @media (max-width: 380px) {
   .category-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .add-row input { min-width: 0; }
+}
+/* The classic game is the primary starting point; guides stay one click away. */
+.mode-card.classic-mode {
+  border-color: #2694e8;
+  background: linear-gradient(145deg, #e7f5ff, #fff 70%);
+  box-shadow: 0 8px 24px rgba(31, 134, 209, .16);
+  padding-top: 22px;
+}
+.classic-mode h3 { font-size: 29px; }
+.classic-mode .mode-tag { background: #135c93; color: #fff; }
+.mode-start { display: flex; justify-content: space-between; margin-top: 18px; padding: 11px 14px; border-radius: 12px; background: #126aa5; color: #fff; font-size: 14px; font-weight: 800; }
+.home-links { padding: 20px 4px 0; text-align: center; }
+.home-links nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 18px; }
+.home-links a { color: #245b82; font-size: 12px; text-decoration: none; }
+.home-links a:hover { text-decoration: underline; }
+.home-links a:focus-visible, .home-more summary:focus-visible { outline: 2px solid #126aa5; outline-offset: 4px; }
+.home-more { margin-top: 14px; }
+.home-more summary { cursor: pointer; color: #42627a; font-size: 12px; }
+.home-more[open] nav { margin-top: 14px; }
+/* A lighter home surface with consistent spacing and quiet interaction cues. */
+.header-back.spacer { background: transparent; pointer-events: none; }
+.mode-select-screen .panel { padding: 16px; background: rgba(255, 255, 255, .94); border-color: rgba(20, 85, 146, .12); box-shadow: 0 12px 32px rgba(16, 47, 79, .08); }
+.mode-select-screen .mode-hero { padding: 12px 8px 16px; margin: 0; background: none; }
+.home-emblem { width: 42px; height: 42px; margin: 0 auto 14px; display: grid; place-items: center; border: 1px solid #c4e4fa; border-radius: 14px; background: linear-gradient(145deg, #e2f3ff, #f6fbff); color: #126aa5; font-size: 22px; box-shadow: 0 3px 8px rgba(18, 106, 165, .06); }
+.mode-select-screen .mode-hero h2 { margin: 0 0 8px; font-size: 28px; }
+.mode-select-screen .mode-hero p { margin: 0 auto; max-width: 28ch; font-size: 13px; color: #52677b; }
+.mode-select-screen .mode-cards { gap: 14px; }
+.mode-select-screen .mode-card { width: 100%; padding: 20px; border-radius: 22px; }
+.mode-select-screen .classic-mode { border-color: #67b5eb; box-shadow: 0 6px 18px rgba(31, 134, 209, .12); }
+.mode-select-screen .fact-mode { border: 1px solid #eadfbe; background: linear-gradient(145deg, #fffdf7, #fff); box-shadow: 0 3px 10px rgba(55, 45, 20, .04); }
+.mode-select-screen .mode-card-icon { width: 42px; height: 42px; font-size: 21px; margin-bottom: 14px; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .3); }
+.mode-select-screen .mode-card h3 { margin-bottom: 8px; }
+.mode-select-screen .mode-card p { margin: 0 0 14px; font-size: 13px; line-height: 1.6; }
+.mode-select-screen .mode-features li { font-size: 12px; margin-bottom: 5px; }
+.mode-select-screen .mode-tag { top: 18px; right: 16px; font-size: 9px; letter-spacing: .4px; }
+.mode-select-screen .mode-tag.new { background: #fff1c9; color: #75500c; }
+.mode-start { margin-top: 16px; padding: 12px 14px; background: linear-gradient(120deg, #147dbd, #12649d); box-shadow: 0 4px 10px rgba(18, 106, 165, .14); }
+.mode-alternative { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; padding-top: 12px; border-top: 1px solid #eee5ce; color: #75500c; font-size: 12px; font-weight: 800; }
+.home-links { margin-top: 4px; padding-top: 16px; border-top: 1px solid #e6edf3; }
+.home-links a { min-height: 32px; display: inline-flex; align-items: center; }
+.home-more { margin-top: 6px; }
+.home-more summary { padding: 8px; }
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .mode-start span, .mode-alternative span { transition: transform .2s ease; }
+  .mode-card:hover .mode-start span, .mode-card:hover .mode-alternative span { transform: translateX(3px); }
+}
+@media (max-width: 350px) {
+  .mode-select-screen .panel { padding: 12px; }
+  .mode-select-screen .mode-card { padding: 16px; }
 }
