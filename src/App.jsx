@@ -19,8 +19,8 @@ import './styles/animations.css';
 import { CATEGORIES } from './data/words';
 import { FACT_CATEGORIES } from './data/facts';
 import { AVATARS } from './assets/avatars';
-import samidViale from './assets/samid_viale.png';
-import image1 from './assets/image1.png';
+import samidViale from './assets/samid_viale.webp';
+import image1 from './assets/image1.webp';
 import { GAME_STATES, GAME_MODES, useGameEngine } from './hooks/useGameEngine';
 import { PageTransition, StaggerContainer, StaggerItem } from './components/PageTransition';
 import { Button3D, GlowButton } from './components/ui/Button3D';
@@ -93,7 +93,7 @@ function ModeSelectScreen({ gameEngine }) {
                 type="button"
                 className="mode-card classic-mode"
                 onClick={() => selectGameMode(GAME_MODES.CLASSIC)}
-                whileHover={{ scale: 1.02, y: -4 }}
+                whileHover={{ scale: 1.02, y: -4, rotateX: 3, rotateY: -3 }}
                 whileTap={{ scale: 0.98 }}
               >
                 <div className="mode-card-icon">
@@ -120,7 +120,7 @@ function ModeSelectScreen({ gameEngine }) {
                 type="button"
                 className="mode-card fact-mode"
                 onClick={() => selectGameMode(GAME_MODES.RANDOM_FACT)}
-                whileHover={{ scale: 1.02, y: -4 }}
+                whileHover={{ scale: 1.02, y: -4, rotateX: 3, rotateY: -3 }}
                 whileTap={{ scale: 0.98 }}
               >
                 <div className="mode-card-icon">
@@ -297,6 +297,9 @@ function GameInformation() {
       <footer className="site-footer">
         <p>El Impostor Argentino</p>
         <nav aria-label="Informacion del sitio">
+          <a href="/palabras.html">728 palabras</a>
+          <a href="/estrategias.html">Estrategias</a>
+          <a href="/variantes.html">Variantes</a>
           <a href="/como-jugar.html">Como jugar</a>
           <a href="/sobre-el-juego.html">Sobre el juego</a>
           <a href="/privacidad.html">Privacidad</a>
@@ -486,6 +489,7 @@ function ConfigScreen({ gameEngine, onHome }) {
                 }
               }}
               placeholder="Nombre del jugador"
+              aria-label="Nombre del jugador"
               whileFocus={{ scale: 1.01, boxShadow: '0 0 0 3px rgba(38, 148, 232, 0.2)' }}
             />
             <motion.button 
@@ -798,7 +802,7 @@ function RevealScreen({ gameEngine }) {
 
         <div className="reveal-card-3d-container">
           <motion.div
-            className={`reveal-card-3d reveal-card-3d-${getCardStyle()}`}
+            className={`reveal-card-3d reveal-card-3d-${getCardStyle()} ${isRevealed ? 'is-revealed' : ''}`}
             onClick={() => {
               setIsRevealed((prev) => {
                 const next = !prev;
@@ -833,7 +837,7 @@ function RevealScreen({ gameEngine }) {
             whileTap={{ scale: 0.96 }}
             style={{ transformStyle: 'preserve-3d', WebkitTransformStyle: 'preserve-3d' }}
           >
-            <div className="reveal-card-3d-face reveal-card-3d-front">
+            <div className="reveal-card-3d-face reveal-card-3d-front" aria-hidden={isRevealed}>
               <motion.div
                 animate={{ scale: [1, 1.1, 1], opacity: [0.8, 1, 0.8] }}
                 transition={{ duration: 2, repeat: Infinity }}
@@ -843,7 +847,7 @@ function RevealScreen({ gameEngine }) {
               <span className="reveal-card-hint">Toca para revelar</span>
             </div>
 
-            <div className="reveal-card-3d-face reveal-card-3d-back">
+            <div className="reveal-card-3d-face reveal-card-3d-back" aria-hidden={!isRevealed}>
               <span className="reveal-card-role">
                 {currentPlayer.isImposter ? '👹 Impostor' : '✅ Ciudadano'}
               </span>

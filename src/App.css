@@ -2107,3 +2107,15 @@ p {
     font-size: 20px;
   }
 }
+.site-discovery { width: min(780px, calc(100% - 32px)); margin: 36px auto; padding: 28px; border: 1px solid rgba(20,85,146,.18); border-radius: 24px; background: #fff; line-height: 1.65; }
+.site-discovery h2 { font-family: 'Manrope', 'Segoe UI', sans-serif; font-size: 1.3rem; }
+.site-discovery nav { display: flex; flex-wrap: wrap; gap: 16px; }
+.site-discovery a { color: #126aa5; font-weight: 700; }
+.mode-cards { perspective: 1000px; }
+.mode-card { position: relative; isolation: isolate; }
+.mode-card::after { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: linear-gradient(125deg, rgba(255,255,255,.36), transparent 45%); }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; scroll-behavior: auto !important; } }
+@media (max-width: 380px) {
+  .category-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .add-row input { min-width: 0; }
+}

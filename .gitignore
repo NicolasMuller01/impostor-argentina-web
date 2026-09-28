@@ -30,3 +30,5 @@ skills-lock.json
 *.njsproj
 *.sln
 *.sw?
+
+.pnpm-store/

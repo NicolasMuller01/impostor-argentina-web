@@ -240,3 +240,6 @@ dd {
     grid-template-columns: 1fr;
   }
 }
+.word-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 8px 20px; padding-left: 20px; }
+.site-nav a:focus-visible, .back-link:focus-visible { outline: 3px solid #126aa5; outline-offset: 4px; }
+@media (max-width: 520px) { .site-header-inner { flex-direction: column; align-items: flex-start; } .site-nav { justify-content: flex-start; } }

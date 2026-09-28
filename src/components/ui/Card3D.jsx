@@ -61,7 +61,7 @@ export function RevealCard({
   return (
     <div className="reveal-card-3d-container">
       <motion.div
-        className={`reveal-card-3d reveal-card-3d-${variant}`}
+        className={`reveal-card-3d reveal-card-3d-${variant} ${isRevealed ? 'is-revealed' : ''}`}
         onClick={onReveal}
         onKeyDown={(event) => {
           if (event.key === 'Enter' || event.key === ' ') {
@@ -82,7 +82,7 @@ export function RevealCard({
         whileTap={shouldAnimate ? { scale: 0.96 } : {}}
         style={{ transformStyle: 'preserve-3d', WebkitTransformStyle: 'preserve-3d' }}
       >
-        <div className="reveal-card-3d-face reveal-card-3d-front" style={{ opacity: isRevealed ? 0 : 1 }}>
+        <div className="reveal-card-3d-face reveal-card-3d-front" aria-hidden={isRevealed}>
           <motion.div
             animate={shouldAnimate ? { scale: [1, 1.1, 1] } : {}}
             transition={{ duration: 2, repeat: Infinity }}
@@ -92,7 +92,7 @@ export function RevealCard({
           <span className="reveal-card-hint">Toca para revelar</span>
         </div>
 
-        <div className="reveal-card-3d-face reveal-card-3d-back">
+        <div className="reveal-card-3d-face reveal-card-3d-back" aria-hidden={!isRevealed}>
           <span className="reveal-card-role">
             {isImposter ? '👹 Impostor' : '✅ Ciudadano'}
           </span>

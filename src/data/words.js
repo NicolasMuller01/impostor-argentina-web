@@ -1,3 +1,4 @@
+import { EXTRA_WORDS } from './extraWords.js';
 export const CATEGORIES = {
   comidas: {
     id: "comidas",
@@ -382,8 +383,13 @@ export const CATEGORIES = {
   }
 };
 
+for (const [id, entries] of Object.entries(EXTRA_WORDS)) {
+  CATEGORIES[id].words = [...new Set([...CATEGORIES[id].words, ...entries.map(([word]) => word)])];
+}
+
 export const getRandomWord = (categoryIds) => {
-  if (!categoryIds || categoryIds.length === 0) return null;
+  categoryIds = categoryIds?.filter((id) => CATEGORIES[id]);
+  if (!categoryIds?.length) return null;
   const randomCategoryId = categoryIds[Math.floor(Math.random() * categoryIds.length)];
   const category = CATEGORIES[randomCategoryId];
   const randomWord = category.words[Math.floor(Math.random() * category.words.length)];

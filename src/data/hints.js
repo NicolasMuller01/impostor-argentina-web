@@ -1,3 +1,4 @@
+import { EXTRA_WORDS } from './extraWords.js';
 // Per-word hints: HINTS_DATA[categoryId][word] = [array of hints]
 // Ahora exactamente 1 sola pista por palabra. 
 // Las pistas son sutiles, equilibradas para que no sean súper obvias ni imposibles.
@@ -350,7 +351,9 @@ export const getHintForWord = (categoryId, word) => {
     if (!categoryHints) return "Secreto";
 
     const wordHints = categoryHints[word];
-    if (!wordHints || wordHints.length === 0) return "Enigma";
+    if (!wordHints || wordHints.length === 0) {
+        return EXTRA_WORDS[categoryId]?.find(([entry]) => entry === word)?.[1] || "Enigma";
+    }
 
     return wordHints[0];
 };

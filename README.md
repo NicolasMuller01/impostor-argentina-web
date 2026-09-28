@@ -57,3 +57,14 @@ Antes de solicitar otra revision:
 Referencias oficiales: [requisitos para participar](https://support.google.com/adsense/answer/9724?hl=es),
 [politicas para editores](https://support.google.com/adsense/answer/10502938?hl=es) y
 [anuncios en paginas para jugar](https://support.google.com/adsense/answer/2768340?hl=es).
+
+## Mejoras de septiembre de 2026
+
+- Catálogo clásico: 728 entradas en nueve categorías; 410 nuevas palabras con pistas específicas.
+- `/palabras.html` publica el catálogo jugable sin revelar las pistas. `/estrategias.html` y `/variantes.html` ofrecen ejemplos y acuerdos de mesa.
+- Tarjetas con altura adaptable, una sola cara accesible y revelación sin giro completo en dispositivos táctiles.
+- Imágenes principales en WebP: aproximadamente 200 KB combinadas frente a 11 MB de los originales.
+- Metadatos de búsqueda y navegación editorial accesible sin JavaScript; nuevas rutas en el sitemap.
+- Validación: build, ESLint, pistas de las nuevas entradas, 1.000 selecciones aleatorias y revelación manual de una tarjeta.
+
+Antes de pedir revisión de AdSense, publicar estos cambios, verificar el correo de contacto y comprobar las páginas del dominio real. El contenido añadido no garantiza aprobación; Google evalúa el sitio publicado y su experiencia completa. Mantener las guías y corregir referencias reportadas por usuarios.

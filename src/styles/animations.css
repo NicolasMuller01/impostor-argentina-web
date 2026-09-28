@@ -619,3 +619,23 @@
     animation: none !important;
   }
 }
+/* Grid keeps both faces aligned and lets long facts determine the card height. */
+.reveal-card-3d { display: grid; touch-action: manipulation; }
+.reveal-card-3d-face { position: relative; inset: auto; grid-area: 1 / 1; min-height: 230px; width: 100%; backface-visibility: hidden; -webkit-backface-visibility: hidden; transition: none; }
+.reveal-card-3d-front { transform: translateZ(1px); }
+.reveal-card-3d-back { transform: rotateY(180deg) translateZ(1px); }
+.reveal-card-3d-face[aria-hidden="true"] { visibility: hidden; pointer-events: none; }
+.reveal-card-3d-face[aria-hidden="false"] { visibility: visible; }
+.reveal-card-fact { margin: 0; }
+.reveal-card-word, .reveal-card-fact { overflow-wrap: anywhere; }
+.reveal-card-3d:focus-visible { outline: 3px solid #126aa5; outline-offset: 6px; }
+/* Touch browsers use a shallow 3D tilt: text stays on a single readable plane. */
+@media (hover: none), (prefers-reduced-motion: reduce) {
+  .reveal-card-3d { transform: none !important; }
+  .reveal-card-3d-back { transform: none; }
+  .reveal-card-3d-front { transform: none; }
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .mode-card { transition: box-shadow .25s ease; }
+  .mode-card:hover { box-shadow: 0 24px 48px rgba(16,47,79,.22), inset 0 1px 0 rgba(255,255,255,.8); }
+}
