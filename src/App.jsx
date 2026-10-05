@@ -151,45 +151,6 @@ function ModeSelectScreen({ gameEngine }) {
   );
 }
 
-function AdSenseUnit() {
-  const adRef = useRef(null);
-  const adLoadedRef = useRef(false);
-  const adSlotId = import.meta.env.VITE_ADSENSE_SLOT_ID;
-
-  useEffect(() => {
-    if (!adSlotId || !adRef.current || adLoadedRef.current) {
-      return;
-    }
-
-    adLoadedRef.current = true;
-    try {
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
-    } catch {
-      // The ad script can be blocked by the browser or a consent setting.
-      adLoadedRef.current = false;
-    }
-  }, [adSlotId]);
-
-  if (!adSlotId) {
-    return null;
-  }
-
-  return (
-    <aside className="inline-ad" aria-label="Publicidad">
-      <span className="inline-ad-label">Anuncio</span>
-      <ins
-        ref={adRef}
-        className="adsbygoogle"
-        style={{ display: 'block', minHeight: 90 }}
-        data-ad-client="ca-pub-9690532137867207"
-        data-ad-slot={adSlotId}
-        data-ad-format="auto"
-        data-full-width-responsive="true"
-      />
-    </aside>
-  );
-}
-
 function GameInformation() {
   return (
     <footer className="home-links">
@@ -208,7 +169,6 @@ function GameInformation() {
           <a href="/terminos.html">Términos</a>
         </nav>
       </details>
-      <AdSenseUnit />
     </footer>
   );
 }

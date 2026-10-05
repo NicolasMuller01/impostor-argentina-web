@@ -1,21 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://elimpostorargentina.com/</loc>
-  </url>
-  <url>
-    <loc>https://elimpostorargentina.com/como-jugar.html</loc>
-  </url>
-  <url>
-    <loc>https://elimpostorargentina.com/sobre-el-juego.html</loc>
-  </url>
-  <url>
-    <loc>https://elimpostorargentina.com/privacidad.html</loc>
-  </url>
-  <url>
-    <loc>https://elimpostorargentina.com/terminos.html</loc>
-  </url>
-  <url>
-    <loc>https://elimpostorargentina.com/contacto.html</loc>
-  </url>
-<url><loc>https://elimpostorargentina.com/palabras.html</loc></url><url><loc>https://elimpostorargentina.com/estrategias.html</loc></url><url><loc>https://elimpostorargentina.com/variantes.html</loc></url></urlset>
+  <url><loc>https://elimpostorargentina.com/</loc><lastmod>2026-10-05</lastmod></url>
+  <url><loc>https://elimpostorargentina.com/guias.html</loc><lastmod>2026-10-05</lastmod></url>
+  <url><loc>https://elimpostorargentina.com/como-jugar.html</loc></url>
+  <url><loc>https://elimpostorargentina.com/organizar-partida.html</loc><lastmod>2026-10-05</lastmod></url>
+  <url><loc>https://elimpostorargentina.com/estrategias.html</loc></url>
+  <url><loc>https://elimpostorargentina.com/variantes.html</loc></url>
+  <url><loc>https://elimpostorargentina.com/palabras.html</loc></url>
+  <url><loc>https://elimpostorargentina.com/jugar-en-familia.html</loc><lastmod>2026-10-05</lastmod></url>
+  <url><loc>https://elimpostorargentina.com/preguntas-frecuentes.html</loc><lastmod>2026-10-05</lastmod></url>
+  <url><loc>https://elimpostorargentina.com/sobre-el-juego.html</loc></url>
+  <url><loc>https://elimpostorargentina.com/contacto.html</loc></url>
+  <url><loc>https://elimpostorargentina.com/privacidad.html</loc></url>
+  <url><loc>https://elimpostorargentina.com/terminos.html</loc></url>
+</urlset>

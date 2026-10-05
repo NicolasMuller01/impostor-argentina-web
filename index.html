@@ -41,19 +41,54 @@
   </head>
   <body>
     <div id="root"></div>
-    <noscript>
-      <main>
-        <h1>El Impostor Argentino</h1>
-        <p>Juego social de deduccion para jugar en grupo desde una sola pantalla.</p>
-        <p>Conoce las reglas, los modos de juego y los consejos para preparar una ronda.</p>
-        <nav aria-label="Informacion del sitio">
-          <a href="/como-jugar.html">Como jugar</a>
-          <a href="/sobre-el-juego.html">Sobre el juego</a>
-          <a href="/privacidad.html">Privacidad</a>
-          <a href="/contacto.html">Contacto</a>
-        </nav>
-      </main>
-    </noscript>
+    <style>
+      .home-guide{max-width:820px;margin:0 auto;padding:48px 16px 64px;font-family:Arial,Helvetica,sans-serif;line-height:1.65;color:#3d5872}
+      .home-guide h1{color:#0d2b4a;font-size:1.9rem;line-height:1.15;margin:0 0 12px}
+      .home-guide h2{color:#0d2b4a;font-size:1.5rem;line-height:1.15;margin:34px 0 10px}
+      .home-guide h3{color:#123b60;font-size:1.12rem;margin:20px 0 6px}
+      .home-guide a{color:#126aa5;font-weight:700}
+      .home-guide .guide-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;padding:0;list-style:none}
+      .home-guide .guide-grid li{background:rgba(255,255,255,.85);border:1px solid rgba(31,134,209,.2);border-radius:14px;padding:14px 16px}
+      .home-guide .home-guide-footer{margin-top:40px;font-size:.9rem;border-top:1px solid rgba(20,85,146,.16);padding-top:16px}
+    </style>
+    <main class="home-guide" id="guia">
+      <h1>El Impostor Argentino: el juego de la palabra secreta</h1>
+      <p>El Impostor Argentino es un juego social de deducción para jugar en persona, con un solo celular que pasa de mano en mano. Todos reciben la misma palabra secreta, menos una persona: el impostor, que no sabe cuál es. Por turnos, cada jugador dice una pista relacionada con la palabra. Quienes la conocen intentan demostrarlo sin regalarla; el impostor escucha, deduce y trata de pasar desapercibido. Al final de la ronda, el grupo vota a quién cree que miente.</p>
+      <p>Lo armamos con palabras, personajes y costumbres que se entienden en Argentina: comidas como el choripán o la chocotorta, lugares como la cancha o el kiosco, animales autóctonos como el carpincho y el yaguareté, y figuras de la cultura popular. La idea es que la discusión se sienta familiar y que cada pista dispare anécdotas de la mesa.</p>
+
+      <h2>Cómo se juega una ronda, paso a paso</h2>
+      <ol>
+        <li><strong>Configurar:</strong> anoten los nombres, elijan cuántos impostores habrá y qué categorías de palabras quieren usar.</li>
+        <li><strong>Repartir en secreto:</strong> cada persona toma el celular, toca su tarjeta, mira su rol y la vuelve a tapar antes de pasarlo.</li>
+        <li><strong>Dar pistas:</strong> en el orden que indique la app, cada uno dice una sola palabra o frase corta vinculada a la palabra secreta.</li>
+        <li><strong>Debatir:</strong> el grupo pregunta, compara pistas y defiende sus sospechas en voz alta.</li>
+        <li><strong>Votar y revelar:</strong> se elige al sospechoso. Si era el impostor, ganan los ciudadanos; si no, el impostor se lleva la ronda.</li>
+      </ol>
+      <p>Las reglas completas, con casos dudosos y cómo resolver empates, están en <a href="/como-jugar.html">Cómo jugar</a>.</p>
+
+      <h2>Para cuántas personas y cuánto dura</h2>
+      <p>Funciona desde 3 jugadores, aunque la mejor experiencia aparece entre 5 y 10. Con grupos de más de 8 conviene sumar un segundo impostor para que la ronda no se resuelva demasiado rápido. Una ronda dura entre 3 y 8 minutos según cuánto se extienda el debate, así que entra perfecto en una previa, una sobremesa o un recreo largo. No hace falta registrarse ni instalar nada.</p>
+
+      <h2>Qué lo hace distinto</h2>
+      <h3>Palabras pensadas para la mesa argentina</h3>
+      <p>El banco tiene cientos de palabras agrupadas en categorías como comida, fútbol, lugares, objetos de la casa, animales y personajes. Elegimos términos que conozca la mayoría y que admitan varias pistas posibles: una palabra con una sola asociación obvia hace que el impostor pierda enseguida. Podés recorrer la lista en <a href="/palabras.html">Palabras y categorías</a>.</p>
+      <h3>Pista opcional para el impostor</h3>
+      <p>Si el grupo es nuevo o hay chicos, se puede activar una pista general para el impostor. No revela la palabra, pero le da un punto de partida y equilibra las primeras partidas.</p>
+      <h3>Modo Dato Random</h3>
+      <p>En lugar de una palabra, los ciudadanos reciben datos curiosos distintos y el impostor tiene que sostener uno inventado. Ya no se trata de asociar, sino de detectar quién improvisa. Lo explicamos en <a href="/variantes.html">Variantes para jugar</a>.</p>
+
+      <h2>Guías para jugar mejor</h2>
+      <ul class="guide-grid">
+        <li><a href="/como-jugar.html">Reglas completas</a><br>Roles, turnos, votación y desempates.</li>
+        <li><a href="/estrategias.html">Estrategias</a><br>Cómo dar pistas útiles y detectar al impostor.</li>
+        <li><a href="/variantes.html">Variantes</a><br>Formas de cambiar el juego cuando ya lo dominan.</li>
+        <li><a href="/organizar-partida.html">Organizar una partida</a><br>Grupos grandes, cumpleaños, previas y juntadas.</li>
+        <li><a href="/jugar-en-familia.html">En familia y en el aula</a><br>Ajustes para chicos y para docentes.</li>
+        <li><a href="/preguntas-frecuentes.html">Preguntas frecuentes</a><br>Dudas habituales sobre reglas y la app.</li>
+      </ul>
+
+      <p class="home-guide-footer">El Impostor Argentino es un proyecto independiente y gratuito, hecho en Argentina. <a href="/sobre-el-juego.html">Sobre el juego</a> · <a href="/guias.html">Todas las guías</a> · <a href="/contacto.html">Contacto</a> · <a href="/privacidad.html">Privacidad</a> · <a href="/terminos.html">Términos</a></p>
+    </main>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
